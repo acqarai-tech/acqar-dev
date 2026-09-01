@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-cream: #fbfaf8;
+  --color-accent: #b87333;
+  --color-accent-dark: #b57a3f;
+  --color-ink: #0a0a0a;
+  --color-muted: #6b7280;
+  --color-line: #e5e7ec;
+
+  /* Elevation scale — use these instead of ad hoc shadow values */
+  --shadow-xs: 0 1px 2px rgba(20, 14, 8, 0.06);
+  --shadow-sm: 0 1px 1.5px rgba(20, 14, 8, 0.08), 0 1px 1px rgba(20, 14, 8, 0.06);
+  --shadow-md: 0 4px 12px -2px rgba(20, 14, 8, 0.10), 0 2px 6px -2px rgba(20, 14, 8, 0.08);
+  --shadow-lg: 0 12px 32px -6px rgba(20, 14, 8, 0.16), 0 4px 12px -4px rgba(20, 14, 8, 0.10);
+  --shadow-glow: 0 0 0 1px rgba(184, 115, 51, 0.08), 0 8px 24px -4px rgba(184, 115, 51, 0.20);
+}
+
+body {
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Subtle film-grain texture — adds warmth/craft instead of a flat fill */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+
+.marquee-track:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* Scroll-reveal: elements start hidden, .in-view is toggled by IntersectionObserver */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes count-pulse {
+  0% { opacity: 0; transform: scale(0.94); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.count-in {
+  animation: count-pulse 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes blink-cursor {
+  0%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.typing-cursor {
+  display: inline-block;
+  margin-left: 1px;
+  animation: blink-cursor 1s step-end infinite;
+}
+
+/* Floating gradient blobs — slow organic drift, like light moving through water */
+@keyframes float-a {
+  0%   { transform: translate(-50%, 0) scale(1); }
+  33%  { transform: translate(-46%, 6%) scale(1.12); }
+  66%  { transform: translate(-54%, -4%) scale(0.94); }
+  100% { transform: translate(-50%, 0) scale(1); }
+}
+@keyframes float-b {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(6%, -8%) scale(1.15); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes float-c {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-8%, 5%) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .blob-a { animation: float-a 22s ease-in-out infinite; }
+  .blob-b { animation: float-b 26s ease-in-out infinite; }
+  .blob-c { animation: float-c 19s ease-in-out infinite; }
+}
+
+/* Product media reveal: fade + un-blur, more pronounced than the default .reveal */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-media {
+    opacity: 0;
+    transform: translateY(28px) scale(1.03);
+    filter: blur(16px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-media.in-view {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Orbiting avatars: outer rotate + translateX(radius) + inner counter-rotate
+   keeps each photo upright while it revolves clockwise around the center. */
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .avatar-orbit { animation: orbit linear infinite; }
+}
+
+/* FAQ accordion (Radix): animate using the height custom property Radix
+   exposes on Accordion.Content, driven by data-state rather than a JS class. */
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+.faq-content {
+  overflow: hidden;
+}
+.faq-content[data-state='open'] {
+  animation: accordion-down 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.faq-content[data-state='closed'] {
+  animation: accordion-up 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Mobile nav drawer (Radix Dialog) */
+@keyframes nav-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes nav-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes nav-drawer-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes nav-drawer-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+.nav-overlay[data-state='open'] { animation: nav-overlay-in 0.2s ease-out; }
+.nav-overlay[data-state='closed'] { animation: nav-overlay-out 0.15s ease-in; }
+.nav-drawer[data-state='open'] { animation: nav-drawer-in 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
+.nav-drawer[data-state='closed'] { animation: nav-drawer-out 0.15s ease-in; }
+
+/* Mobile "Investors" bottom-sheet popup (Radix Dialog) */
+@keyframes sheet-in { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes sheet-out { from { transform: translateY(0); } to { transform: translateY(100%); } }
+.investor-sheet[data-state='open'] { animation: sheet-in 0.28s cubic-bezier(0.16, 1, 0.3, 1); }
+.investor-sheet[data-state='closed'] { animation: sheet-out 0.2s ease-in; }
+
+/* Desktop floating nav pill: entrance drop-in, staggered link fade-up */
+@keyframes nav-pill-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes nav-item-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.nav-pill { opacity: 1; }
+.nav-item-enter { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .nav-pill { animation: nav-pill-in 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+  .nav-item-enter { animation: nav-item-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+
+/* Idle float + breathing ambient shadow underneath the product image */
+@keyframes product-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes product-shadow-pulse {
+  0%, 100% { transform: scaleX(1); opacity: 0.5; }
+  50% { transform: scaleX(0.85); opacity: 0.3; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .product-float { animation: product-float 6s ease-in-out infinite; }
+  .product-shadow { animation: product-shadow-pulse 6s ease-in-out infinite; }
+}

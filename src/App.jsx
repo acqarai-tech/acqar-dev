@@ -16,6 +16,7 @@ import ChatPage from './components/ChatPage'
 import PropertyValuations from './components/PropertyValuations'
 import AreasListPage from './components/areas/AreasListPage'
 import AreaDetailPage from './components/areas/AreaDetailPage'
+import LoginPage from './pages/LoginPage';
 
 function LandingPage() {
   return (
@@ -45,6 +46,7 @@ function App() {
       <Route path="/valuations" element={<PropertyValuations />} />
       <Route path="/areas" element={<AreasListPage />} />
       <Route path="/areas/:slug" element={<AreaDetailPage />} />
+       <Route path="/loginpage" element={<LoginPage />} />
     </Routes>
   )
 }

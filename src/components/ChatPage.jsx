@@ -164,16 +164,18 @@ const VERDICT_STYLES = {
   Invest: 'bg-accent/10 text-accent-dark',
 }
 
-function ProfileCard({ collapsed, isLoggedIn, onToggleLogin }) {
+function ProfileCard({ collapsed, isLoggedIn, userEmail, onToggleLogin }) {
+  const initial = userEmail?.[0]?.toUpperCase() || 'U'
+
   if (collapsed) {
     return (
       <button
         type="button"
         onClick={onToggleLogin}
-        title={isLoggedIn ? 'Guest User — Free plan' : 'Log in'}
+        title={isLoggedIn ? userEmail : 'Log in'}
         className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-accent/20 bg-white/70 text-accent shadow-[var(--shadow-xs)]"
       >
-        {isLoggedIn ? <span className="text-xs font-semibold">G</span> : <UserCircle size={18} />}
+        {isLoggedIn ? <span className="text-xs font-semibold">{initial}</span> : <UserCircle size={18} />}
       </button>
     )
   }
@@ -200,10 +202,10 @@ function ProfileCard({ collapsed, isLoggedIn, onToggleLogin }) {
     <div className="flex items-center justify-between gap-2 rounded-xl border border-line bg-white px-3 py-2.5">
       <div className="flex min-w-0 items-center gap-2.5">
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">
-          G
+          {initial}
         </span>
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-ink">Guest User</p>
+          <p className="truncate text-sm font-medium text-ink">{userEmail || 'Account'}</p>
           <p className="text-xs text-muted">Free plan</p>
         </div>
       </div>
@@ -280,6 +282,7 @@ function SidebarContent({
   collapsed,
   onToggleCollapse,
   isLoggedIn,
+  userEmail,
   onToggleLogin,
   conversations,
   activeConversationId,
@@ -399,7 +402,7 @@ function SidebarContent({
       )}
 
       <div className={`flex flex-col gap-3 border-t border-line px-4 py-4 ${collapsed ? 'items-center px-2' : ''}`}>
-        <ProfileCard collapsed={collapsed} isLoggedIn={isLoggedIn} onToggleLogin={onToggleLogin} />
+                <ProfileCard collapsed={collapsed} isLoggedIn={isLoggedIn} userEmail={userEmail} onToggleLogin={onToggleLogin} />
       </div>
     </div>
   )
@@ -890,10 +893,19 @@ export default function ChatPage() {
   const hasConversation = messages.length > 0
   const hasAnswer = messages.some((m) => m.role === 'assistant')
 
+    if (authLoading) {
+    return (
+      <div className="flex h-dvh items-center justify-center bg-cream">
+        <Sparkle weight="fill" size={28} className="animate-pulse text-accent" />
+      </div>
+    )
+  }
+
 const sidebarProps = {
   onPromptClick: handlePromptClick,
   onNewChat: resetChat,
   isLoggedIn: !!session,
+  userEmail: session?.user?.email,
   onToggleLogin: async () => {
     if (session) {
       const { error } = await supabase.auth.signOut()

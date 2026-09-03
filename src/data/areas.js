@@ -581,27 +581,35 @@ export async function fetchAreaList() {
     return AREA_LIST
   }
 
-  const bySlug = new Map((data || []).map((row) => [slugify(row.area_name_en || ''), row]))
+  const bySlug = new Map()
 
-  return AREA_NAMES.map((name) => {
+  // Start with every area already known to the app (the curated 54), so
+  // nothing regresses even if the DB is momentarily missing one of them.
+  AREA_NAMES.forEach((name) => {
     const slug = slugify(name)
     const full = FULL_PROFILES[slug]
-    if (full) {
-      return { name, slug, score: Math.round(full.score / 10) / 10, verdict: full.verdict }
-    }
+    const score = full ? Math.round(full.score / 10) / 10 : scoreFor(name)
+    bySlug.set(slug, { name, slug, score, verdict: full ? full.verdict : verdictFor(score) })
+  })
 
-    const row = bySlug.get(slug)
-    if (row && row.investment_score != null) {
-      const score = Math.round(Number(row.investment_score)) / 10
-      const verdict = row.verdict
-        ? row.verdict.charAt(0).toUpperCase() + row.verdict.slice(1).toLowerCase()
-        : verdictFor(score)
-      return { name, slug, score, verdict }
-    }
+  // Then layer in every row from area_intelligence — overwriting the
+  // placeholder with real data, and adding any area the DB has that
+  // isn't part of the curated 54.
+  ;(data || []).forEach((row) => {
+    const slug = slugify(row.area_name_en || '')
+    if (!slug || FULL_PROFILES[slug]) return // hand-authored areas keep their curated score/verdict
 
-    const score = scoreFor(name)
-    return { name, slug, score, verdict: verdictFor(score) }
-  }).sort((a, b) => a.name.localeCompare(b.name))
+    const score100 = Number(row.investment_score)
+    if (!Number.isFinite(score100)) return
+
+    const score = Math.round(score100) / 10
+    const verdict = row.verdict
+      ? row.verdict.charAt(0).toUpperCase() + row.verdict.slice(1).toLowerCase()
+      : verdictFor(score)
+    bySlug.set(slug, { name: row.area_name_en, slug, score, verdict })
+  })
+
+  return Array.from(bySlug.values()).sort((a, b) => a.name.localeCompare(b.name))
 }
 
 const MOOD_WORDS = ['Slow', 'Steady', 'Warming', 'Active', 'Hot']
@@ -667,8 +675,7 @@ function synthesizeProfile(entry, dbRow) {
 export async function fetchAreaProfile(slug) {
   if (FULL_PROFILES[slug]) return FULL_PROFILES[slug]
 
-  const entry = AREA_LIST.find((a) => a.slug === slug)
-  if (!entry) return null
+  let entry = AREA_LIST.find((a) => a.slug === slug)
 
   const { data, error } = await supabase
     .from('area_intelligence')
@@ -676,10 +683,26 @@ export async function fetchAreaProfile(slug) {
 
   if (error) {
     console.error('Failed to load area_intelligence:', error)
-    return synthesizeProfile(entry)
+    return entry ? synthesizeProfile(entry) : null
   }
 
   const row = (data || []).find((r) => slugify(r.area_name_en || '') === slug)
+
+  if (!entry) {
+    // Not one of the curated 54 — but the DB has it, so build a working
+    // entry straight from the row instead of giving up.
+    if (!row || !Number.isFinite(Number(row.investment_score))) return null
+    const score = Math.round(Number(row.investment_score)) / 10
+    entry = {
+      name: row.area_name_en,
+      slug,
+      score,
+      verdict: row.verdict
+        ? row.verdict.charAt(0).toUpperCase() + row.verdict.slice(1).toLowerCase()
+        : verdictFor(score),
+    }
+  }
+
   return synthesizeProfile(entry, row)
 }
 

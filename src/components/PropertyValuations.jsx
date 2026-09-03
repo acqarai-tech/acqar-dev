@@ -94,6 +94,7 @@ function StatCard({ label, value, tag }) {
 }
 
 function ReportCard({ report }) {
+  const navigate = useNavigate()
   return (
     <div className="group flex flex-col rounded-2xl border border-line bg-white p-5 shadow-[var(--shadow-xs)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[var(--shadow-md)]">
       <div className="flex items-start justify-between gap-3">
@@ -119,27 +120,29 @@ function ReportCard({ report }) {
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">Estimated value</p>
           <p className="mt-1 text-xl font-semibold tabular-nums tracking-[-0.02em] text-ink">{report.value}</p>
         </div>
-        <span
-          className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${VERDICT_STYLES[report.verdict]}`}
-        >
-          {report.verdict}
-        </span>
+               {report.verdict && (
+          <span
+            className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${VERDICT_STYLES[report.verdict]}`}
+          >
+            {report.verdict}
+          </span>
+        )}
       </div>
 
       <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
         <p className="text-xs text-muted">{report.date}</p>
-        <a
-          href="#"
+        <button
+          type="button"
+          onClick={() => navigate(`/report?id=${report.id}`)}
           className="flex cursor-pointer items-center gap-1 text-sm font-medium text-accent-dark transition-colors hover:text-accent"
         >
           View report
           <ArrowRight weight="bold" size={13} className="transition-transform duration-200 group-hover:translate-x-0.5" />
-        </a>
+        </button>
       </div>
     </div>
   )
 }
-
 function LoginGate({ onLogin }) {
   return (
     <div className="relative mt-6">
@@ -189,6 +192,8 @@ export default function PropertyValuations() {
   const [search, setSearch] = useState('')
   const [session, setSession] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [valuations, setValuations] = useState([])
+  const [reportsLoading, setReportsLoading] = useState(true)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -213,14 +218,56 @@ export default function PropertyValuations() {
 
   const isLoggedIn = !!session
 
+  useEffect(() => {
+    if (!session?.user?.id) return
+    let mounted = true
+
+    const loadValuations = async () => {
+      setReportsLoading(true)
+      const { data, error } = await supabase
+        .from('valuations')
+        .select('id, property_name, building_name, district, created_at, estimated_valuation, type')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false })
+
+      if (!mounted) return
+      if (error) {
+        console.error('Failed to load valuations:', error)
+        setValuations([])
+      } else {
+        setValuations(data || [])
+      }
+      setReportsLoading(false)
+    }
+
+    loadValuations()
+    return () => { mounted = false }
+  }, [session])
+
+  const reports = useMemo(() => {
+    return valuations.map((v) => ({
+      id: v.id,
+      building: v.property_name || v.building_name || 'Property',
+      area: v.district || '—',
+      unit: v.building_name && v.building_name !== v.property_name ? v.building_name : '',
+      value: Number(v.estimated_valuation) > 0
+        ? `AED ${Number(v.estimated_valuation).toLocaleString()}`
+        : '—',
+      plan: (v.type || 'free').toLowerCase() === 'paid' ? 'paid' : 'free',
+      date: v.created_at
+        ? new Date(v.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '',
+    }))
+  }, [valuations])
+
   const filteredReports = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return SAMPLE_REPORTS.filter((r) => {
+    return reports.filter((r) => {
       const matchesFilter = filter === 'all' || r.plan === filter
       const matchesSearch = !q || `${r.building} ${r.area}`.toLowerCase().includes(q)
       return matchesFilter && matchesSearch
     })
-  }, [filter, search])
+  }, [reports, filter, search])
 
   return (
     <div className="bg-cream text-ink pb-24 md:pb-0">
@@ -251,8 +298,8 @@ export default function PropertyValuations() {
             <>
               {/* Stats */}
               <div className="mt-8 grid grid-cols-2 gap-3 sm:max-w-[420px]">
-                <StatCard label="Total reports" value={`${SAMPLE_REPORTS.length} / 3`} tag="Free plan" />
-                <StatCard label="Active assets" value={String(SAMPLE_REPORTS.length)} />
+                <StatCard label="Total reports" value={`${reports.length} / 3`} tag="Free plan" />
+                <StatCard label="Active assets" value={String(reports.length)} />
               </div>
 
               <div className="mt-8 border-t border-line" />
@@ -298,7 +345,11 @@ export default function PropertyValuations() {
               </div>
 
               {/* Reports grid / empty state */}
-              {filteredReports.length > 0 ? (
+              {reportsLoading ? (
+                <div className="mt-6 flex items-center justify-center rounded-[28px] border border-dashed border-line bg-white/60 px-6 py-16 text-center text-sm text-muted">
+                  Loading your reports…
+                </div>
+              ) : filteredReports.length > 0 ? (
                 <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {filteredReports.map((report) => (
                     <ReportCard key={report.id} report={report} />
@@ -309,7 +360,7 @@ export default function PropertyValuations() {
                   <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-white text-accent shadow-[var(--shadow-md)]">
                     <ChartBar weight="duotone" size={26} />
                   </span>
-                  {SAMPLE_REPORTS.length === 0 ? (
+                  {reports.length === 0 ? (
                     <>
                       <h2 className="mt-5 text-lg font-semibold text-ink">No valuations yet</h2>
                       <p className="mt-1.5 max-w-[320px] text-sm leading-relaxed text-muted">

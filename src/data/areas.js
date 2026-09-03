@@ -509,56 +509,12 @@ const BUSINESS_BAY_PROFILE = {
   ],
 }
 
-const DUBAI_MARINA_PROFILE = {
-  slug: 'dubai-marina',
-  name: 'Dubai Marina',
-  tag: 'Prime · Waterfront Residential',
-  zone: 'Prime',
-  score: 74,
-  verdict: 'Buy',
-  outlookLabel: '12-month outlook · Aug 2026',
-  scoreBreakdown: [
-    { label: 'Are people buying?', value: 75 },
-    { label: 'Is the price fair?', value: 64 },
-    { label: "What's coming nearby?", value: 70 },
-    { label: 'Is the mood positive?', value: 68 },
-  ],
-  metrics: [
-    { label: 'Homes sold this week', value: '380', note: '5% up vs last week', tone: 'positive' },
-    { label: "What's a fair price here?", value: 'AED 2,150/sqft', note: 'Up over 3 months', tone: 'positive' },
-    { label: 'Rent return per year', value: '6.6%', note: "Above Dubai's 6.1% average", tone: 'positive' },
-    { label: 'How long to sell?', value: '31 days', note: 'Faster than usual', tone: 'positive' },
-    { label: 'Homes available to buy', value: '2,850', note: 'Tighter than normal', tone: 'default' },
-    { label: 'Market mood right now', value: 'Active', note: 'Demand holding up well', tone: 'positive' },
-  ],
-  brief: {
-    updated: 'Aug 2026',
-    sources: 13,
-    text: 'Dubai Marina is one of the few established prime areas still showing tightening supply and shortening sale times this year — a combination that historically precedes further price firmness rather than a plateau.',
-  },
-  priceHistory: [
-    { label: '2022', value: 1780 },
-    { label: '2023', value: 1920 },
-    { label: '2024', value: 2040 },
-    { label: '2025', value: 2090 },
-    { label: '2026', value: 2150 },
-  ],
-  maturity: [
-    { label: 'Year established', value: '2003' },
-    { label: 'Master developer', value: 'Emaar Properties' },
-    { label: 'Zone', value: 'Prime' },
-    { label: 'Total area', value: '500 hectares' },
-    { label: 'Completion rate', value: '~95% built' },
-    { label: 'Residential units', value: '48,900 registered' },
-    { label: 'Occupancy rate', value: '94%' },
-    { label: '5-year appreciation', value: '+46.0%' },
-  ],
-}
+
 
 const FULL_PROFILES = {
   [JVC_PROFILE.slug]: JVC_PROFILE,
   [BUSINESS_BAY_PROFILE.slug]: BUSINESS_BAY_PROFILE,
-  [DUBAI_MARINA_PROFILE.slug]: DUBAI_MARINA_PROFILE,
+ 
 }
 
 // Areas with a hand-authored full profile must show the SAME score/verdict

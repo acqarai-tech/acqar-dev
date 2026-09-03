@@ -1953,7 +1953,12 @@ export async function fetchAreaProfile(slug) {
     investor: personaExtras.investor ?? base.investor,
     owner: personaExtras.owner ?? base.owner,
     ticker,
-    comments: comments ?? base.comments,
+    // Empty array (not null/undefined) once we have a DB-linked area, so
+    // the Discussion section — and its composer — always renders, even
+    // with zero comments yet. Previously this stayed hidden entirely
+    // until someone else's comment already existed, which is backwards:
+    // the composer is how the first comment gets posted at all.
+    comments: comments ?? base.comments ?? [],
     alert: alert ?? base.alert,
     // ownershipCosts/brief are always computable once we have a row (pure
     // formulas / templated text) — only defer to base's hand-authored
@@ -2111,9 +2116,25 @@ async function fetchPresentTabData(areaId, row) {
     return [label, fmtAed(cheapest), fmtAed(fair), fmtAed(mostExpensive)]
   }).filter(Boolean)
 
-  const pricing = pricingRows.length
-    ? { columns: ['Property type', 'Cheapest', 'Fair price', 'Most expensive'], rows: pricingRows }
-    : null
+  // If avm has no usable rows for this area (empty table, or no rows that
+  // match any bucket), fall back to a psf-formula estimate instead of
+  // hiding the section — same approach as ownershipCosts/brief, so "Cost
+  // to buy" is never blank for an area that has a DB row at all.
+  const SQFT_BY_TYPE = [
+    ['Studio', 450, 0.72],
+    ['1 Bedroom', 800, 1],
+    ['2 Bedroom', 1250, 0.974],
+    ['3 Bedroom', 1800, 0.958],
+    ['Townhouse/Villa', 2600, 1.15],
+  ]
+  const finalPricingRows = pricingRows.length
+    ? pricingRows
+    : SQFT_BY_TYPE.map(([label, sqft, mult]) => {
+        const fair = Math.round(psf * mult * sqft)
+        return [label, fmtAed(Math.round(fair * 0.78)), fmtAed(fair), fmtAed(Math.round(fair * 1.32))]
+      })
+
+  const pricing = { columns: ['Property type', 'Cheapest', 'Fair price', 'Most expensive'], rows: finalPricingRows }
 
   if (avmData.length) {
     const apt = avmData.filter((r) => /flat|apart/i.test(r.property_sub_type_en || '')).length

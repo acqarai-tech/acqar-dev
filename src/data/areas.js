@@ -764,7 +764,7 @@ export async function fetchAreaProfile(slug) {
 // Present/Future — no new query, and no dependency on acqar-signal's
 // separate Railway ticker backend.
 function buildTickerItems(entry, row, present, future) {
-  const yld = Number(row.gross_yield_pct) || 6.5
+  const yld = (Number(row.gross_yield_pct) || 6.5).toFixed(1)
   const score100 = row.investment_score != null ? Math.round(Number(row.investment_score)) : Math.round(entry.score * 10)
   const verdict = row.verdict ? row.verdict.charAt(0).toUpperCase() + row.verdict.slice(1).toLowerCase() : entry.verdict
    const soldThisWeek = Number(row.tx_7d) > 0 ? row.tx_7d : Math.round(80 + score100 * 1.5)

@@ -684,9 +684,9 @@ function synthesizeProfile(entry, dbRow) {
 export async function fetchAreaProfile(slug) {
   let entry = AREA_LIST.find((a) => a.slug === slug)
 
-   const { data, error } = await supabase
+      const { data, error } = await supabase
     .from('area_intelligence')
-    .select('area_id, area_name_en, investment_score, gross_yield_pct, truvalu_psm, verdict, tx_7d, key_developers, zone_type')
+    .select('area_id, area_name_en, investment_score, gross_yield_pct, truvalu_psm, verdict, tx_7d, key_developers, zone_type, distress_pct, catalyst_score, buyer_nationalities, active_project_count, year_established, master_developer, total_area_ha, completion_rate, residential_units, parks_info, retail_info')
 
   if (error) {
     console.error('Failed to load area_intelligence:', error)

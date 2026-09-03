@@ -1243,12 +1243,13 @@ async function fetchPastTabData(areaId, areaName, keyDevelopers, zoneType, row) 
   }
 
 
-const projRows = dldProjects.data || []
+  const projRows = dldProjects.data || []
   const active = projRows.filter((p) => p.project_status === 'ACTIVE')
   const avgCompletion = projRows.length
     ? Math.round(projRows.reduce((s, p) => s + (Number(p.percent_completed) || 0), 0) / projRows.length)
     : null
-  const pipelineUnits = active.reduce((s, p) => s + (Number(p.cnt_unit) || 0), 0)
+ 
+  const pipelineUnits = projRows.reduce((s, p) => s + (Number(p.cnt_unit) || 0), 0)
   const availableListings = row?.investment_score != null ? Math.round(1500 + Number(row.investment_score) * 50) : null
   const appreciation5y = result.priceHistory?.length >= 2
     ? (((result.priceHistory[result.priceHistory.length - 1].value - result.priceHistory[0].value) / result.priceHistory[0].value) * 100).toFixed(1)

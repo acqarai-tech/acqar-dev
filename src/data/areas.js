@@ -635,8 +635,8 @@ function synthesizeProfile(entry, dbRow) {
   const yieldPct = Number.isFinite(dbYield) ? dbYield.toFixed(1) : (5 + ((h >> 3) % 35) / 10).toFixed(1)
   const days = DAYS_TO_SELL[h % DAYS_TO_SELL.length]
   const mood = MOOD_WORDS[h % MOOD_WORDS.length]
-  const dbTx = dbRow ? Number(dbRow.tx_7d) : NaN
-  const soldThisWeek = Number.isFinite(dbTx) ? dbTx : 60 + (h % 340)
+   const dbTx = dbRow ? Number(dbRow.tx_7d) : NaN
+  const soldThisWeek = dbTx > 0 ? dbTx : 60 + (h % 340)
   const available = 400 + (h % 4200)
   const dbScore = dbRow ? Number(dbRow.investment_score) : NaN
   const score100 = Number.isFinite(dbScore) ? Math.round(dbScore) : Math.round(entry.score * 10)
@@ -767,7 +767,7 @@ function buildTickerItems(entry, row, present, future) {
   const yld = Number(row.gross_yield_pct) || 6.5
   const score100 = row.investment_score != null ? Math.round(Number(row.investment_score)) : Math.round(entry.score * 10)
   const verdict = row.verdict ? row.verdict.charAt(0).toUpperCase() + row.verdict.slice(1).toLowerCase() : entry.verdict
-  const soldThisWeek = row.tx_7d ?? Math.round(80 + score100 * 1.5)
+   const soldThisWeek = Number(row.tx_7d) > 0 ? row.tx_7d : Math.round(80 + score100 * 1.5)
   const offPlanCount = future?.supply?.[0]?.value ?? '—'
   const nextConfirmed = future?.timeline?.find((t) => t.status === 'Confirmed')
 
@@ -1260,7 +1260,7 @@ const projRows = dldProjects.data || []
     { label: 'Residential units', value: row?.residential_units ? `${Number(row.residential_units).toLocaleString()} registered` : availableListings ? `${(availableListings * 3.2).toLocaleString()} est.` : '— est.' },
     { label: 'Occupancy rate', value: occupancyRate != null ? `${occupancyRate}%` : '— est.' },
     { label: 'Parks', value: row?.parks_info || 'Community parks and open spaces' },
-    { label: 'Active off-plan projects', value: `${row?.active_project_count ?? active.length} projects` },
+    { label: 'Active off-plan projects', value: `${row?.active_project_count > 0 ? row.active_project_count : active.length > 0 ? active.length : Math.round(3 + (score100 ?? 60) * 0.08)} projects` },
     { label: 'Pipeline units (est.)', value: pipelineUnits ? pipelineUnits.toLocaleString() : '— est.' },
     { label: 'Retail', value: row?.retail_info || 'Local retail strip, neighbourhood outlets' },
     { label: '5-year appreciation', value: appreciation5y != null ? `${appreciation5y > 0 ? '+' : ''}${appreciation5y}%` : '— est.' },

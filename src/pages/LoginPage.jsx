@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import posthog from "posthog-js";
+import acqarLogo from "../assets/acqar-logo.webp";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -115,7 +116,7 @@ if (isAdmin && session) {
           onClick={() => navigate("/")}
         >
           <div style={styles.logoBox}>
-            <img src="/favicon-32x32.png" alt="ACQAR" width={22} height={22} style={{ display: "block" }} />
+            <img src={acqarLogo} alt="ACQAR" width={22} height={22} style={{ display: "block" }} />
           </div>
 
           <h1 className="text-xl sm:text-2xl font-black tracking-tighter uppercase whitespace-nowrap">

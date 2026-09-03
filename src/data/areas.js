@@ -624,9 +624,28 @@ export async function fetchAreaList() {
 const MOOD_WORDS = ['Slow', 'Steady', 'Warming', 'Active', 'Hot']
 const DAYS_TO_SELL = [28, 33, 38, 43, 51, 58]
 
+// Alert for synthesized/preview areas — uses the same verdict/mood signals
+// already computed in synthesizeProfile, so preview areas can show a note
+// too instead of only the 3 hand-authored + DB-linked areas.
+function buildSyntheticAlert(name, verdict, mood) {
+  if (verdict === 'Hold') {
+    return {
+      title: 'Market note',
+      body: `Pricing in ${name} has largely caught up with fundamentals, leaving less obvious upside for new buyers today than areas still working through a price-discovery phase.`,
+    }
+  }
+  if (mood === 'Slow') {
+    return {
+      title: 'Market note',
+      body: `Transaction pace in ${name} has cooled recently — worth watching before committing, though this is often a temporary mood shift rather than a fundamentals problem.`,
+    }
+  }
+  return null
+}
+
 // Generates a lightweight-but-complete profile for any area that doesn't
-// have hand-authored content above, so every entry in AREA_LIST resolves to
-// a working detail page instead of a dead link.
+
+
 function synthesizeProfile(entry, dbRow) {
   const h = hash(entry.name)
   const psm = dbRow ? Number(dbRow.truvalu_psm) || 0 : 0
@@ -677,6 +696,7 @@ function synthesizeProfile(entry, dbRow) {
       { label: 'Typical rental yield', value: `${yieldPct}%` },
       { label: 'Active listings', value: available.toLocaleString() },
     ],
+    alert: buildSyntheticAlert(entry.name, verdict, mood),
     future: {
       timeline: [
         { type: 'metro', name: 'Metro network proximity improvements' },

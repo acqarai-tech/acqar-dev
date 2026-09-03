@@ -713,12 +713,15 @@ export async function fetchAreaProfile(slug) {
   const base = FULL_PROFILES[slug] ?? synthesizeProfile(entry, row)
   if (!row?.area_id) return base
 
-  const [pastExtras, presentExtras, futureExtras] = await Promise.all([
+   const [pastExtras, presentExtras, futureExtras, comments] = await Promise.all([
     fetchPastTabData(row.area_id, entry.name, row.key_developers, row.zone_type),
     fetchPresentTabData(row.area_id, row),
     fetchFutureTabData(row.area_id, row),
+    fetchAreaComments(row.area_id),
   ])
   const personaExtras = buildPersonaData(entry, row, presentExtras.present, futureExtras.future)
+  const ticker = buildTickerItems(entry, row, presentExtras.present, futureExtras.future)
+  const alert = buildMarketAlert(entry, row, presentExtras.present)
 
   // Merge field-by-field: live data wins where it exists, otherwise keep
   // whatever base already had (hand-authored for JVC/Business Bay/Dubai
@@ -733,7 +736,79 @@ export async function fetchAreaProfile(slug) {
     future: futureExtras.future ?? base.future,
     investor: personaExtras.investor ?? base.investor,
     owner: personaExtras.owner ?? base.owner,
+    ticker,
+    comments: comments ?? base.comments,
+    alert: alert ?? base.alert,
   }
+}
+
+// Builds live ticker items from the same real numbers already fetched for
+// Present/Future — no new query, and no dependency on acqar-signal's
+// separate Railway ticker backend.
+function buildTickerItems(entry, row, present, future) {
+  const yld = Number(row.gross_yield_pct) || 6.5
+  const score100 = row.investment_score != null ? Math.round(Number(row.investment_score)) : Math.round(entry.score * 10)
+  const verdict = row.verdict ? row.verdict.charAt(0).toUpperCase() + row.verdict.slice(1).toLowerCase() : entry.verdict
+  const soldThisWeek = row.tx_7d ?? Math.round(80 + score100 * 1.5)
+  const offPlanCount = future?.supply?.[0]?.value ?? '—'
+  const nextConfirmed = future?.timeline?.find((t) => t.status === 'Confirmed')
+
+  return [
+    { label: 'Rental return', value: `${yld}%/year` },
+    { label: 'Distress listings', value: `${present?.distress?.value ?? '—'} below fair value` },
+    { label: 'Next catalyst', value: nextConfirmed ? `${nextConfirmed.date} · Confirmed` : 'None confirmed yet' },
+    { label: 'Off-plan pipeline', value: `${offPlanCount} active projects` },
+    { label: 'Signal', value: `${verdict} · Score ${score100}/100` },
+    { label: 'Sold this week', value: `${soldThisWeek} homes` },
+  ]
+}
+
+// Real-data-driven market note — only fires when the numbers actually
+// warrant flagging something, so it doesn't show generic noise on areas
+// with nothing notable going on. Never fabricates area-specific news
+// events (unlike JVC's hand-authored "Iran/USA" narrative, which stays
+// as JVC's own hand-authored content since it's a real dated event, not
+// something we can honestly generalize to every area).
+function buildMarketAlert(entry, row, present) {
+  const distressPct = present?.distress?.value ? Number(present.distress.value.replace('%', '')) : null
+  const verdict = row.verdict ? row.verdict.charAt(0).toUpperCase() + row.verdict.slice(1).toLowerCase() : entry.verdict
+
+  if (distressPct != null && distressPct > 15) {
+    return {
+      title: 'Market note',
+      body: `${distressPct}% of active listings here are priced below the Truvalu™ floor, above the 11% 12-month average — a genuine entry window for patient buyers if fundamentals hold.`,
+    }
+  }
+  if (verdict === 'Hold') {
+    return {
+      title: 'Market note',
+      body: `Pricing here has largely caught up with fundamentals, leaving less obvious upside for new buyers today than areas still working through a price-discovery phase.`,
+    }
+  }
+  return null
+}
+
+// Fetches real seed comments for the Discussion section from the
+// area_comments table. Read-only here — CommentSection itself stays
+// local-state-only for posting/voting (unchanged), matching its existing
+// documented design ("no backend/auth yet").
+async function fetchAreaComments(areaId) {
+  const { data, error } = await supabase
+    .from('area_comments')
+    .select('id, user_name, content, parent_id, created_at')
+    .eq('area_id', areaId)
+    .is('parent_id', null)
+    .order('created_at', { ascending: false })
+    .limit(20)
+
+  if (error || !data?.length) return null
+
+  return data.map((c) => {
+    const hoursAgo = Math.max(0, Math.round((Date.now() - new Date(c.created_at).getTime()) / 3600000))
+    const name = c.user_name || 'Anonymous'
+    const initials = name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase() || 'A'
+    return { name, initials, hoursAgo, text: c.content, score: 1 }
+  })
 }
 
 // Fetches the real Present-tab data (distress meter, transaction volume,

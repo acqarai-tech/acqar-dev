@@ -1085,13 +1085,32 @@ const CATALYST_IMPACT = {
   park: 'Resident satisfaction ↑, occupancy ↑',
 }
 
+const DLD_PROJECTS_AREA_ID_ALIASES = {
+  1509: 334,
+  190: 334,
+}
+
+const DLD_PROJECTS_SELECT = 'project_name, developer_name, project_status, percent_completed, project_end_date, no_of_units'
+
+async function fetchDldProjectsForArea(areaId, areaName) {
+  const tryId = DLD_PROJECTS_AREA_ID_ALIASES[areaId] ?? areaId
+  const primary = await supabase.from('dld_projects').select(DLD_PROJECTS_SELECT).eq('area_id', tryId)
+  if (primary.data?.length) return primary.data
+
+  if (areaName) {
+    const byName = await supabase.from('dld_projects').select(DLD_PROJECTS_SELECT).ilike('area_name_en', areaName)
+    if (byName.data?.length) return byName.data
+  }
+
+  return []
+}
+
 // Fetches the real Future-tab data (infrastructure catalysts, catalyst
 // score, off-plan supply, project pipeline) for a single area_id.
 async function fetchFutureTabData(areaId, row) {
   const [catalysts, projects] = await Promise.all([
     supabase.from('area_catalysts').select('id, name, catalyst_type, expected_date, confidence, description').eq('area_id', areaId).order('expected_date'),
-   
-supabase.from('dld_projects').select('project_name, developer_name, project_status, percent_completed, project_end_date, no_of_units').eq('area_id', areaId),
+    fetchDldProjectsForArea(areaId, row.area_name_en),
   ])
 
  const future = {}
@@ -1119,7 +1138,7 @@ supabase.from('dld_projects').select('project_name, developer_name, project_stat
     ],
   }
 
-  const projRows = projects.data || []
+    const projRows = projects || []
   const active = projRows.filter((p) => p.project_status === 'ACTIVE')
   const totalUnits = projRows.reduce((s, p) => s + (Number(p.no_of_units) || 0), 0)
   const nextYear = new Date().getFullYear() + 1
@@ -1245,13 +1264,10 @@ function buildPersonaData(entry, row, present, future) {
 async function fetchPastTabData(areaId, areaName, keyDevelopers, zoneType, row) {
   const result = {}
 
-  const [monthly, manual, dldProjects] = await Promise.all([
+  const [monthly, manual, dldProjectRows] = await Promise.all([
     supabase.from('price_history_monthly').select('sale_year, sale_month, psf').eq('area_id', areaId).gte('sale_year', 2020),
     supabase.from('price_history_manual').select('sale_year, sale_month, psf').eq('area_id', areaId).gte('sale_year', 2020),
-    // Reused for maturity below (completion rate, pipeline units) — same
-    // table Future's fetchFutureTabData queries, cheap enough to run twice
-    // rather than thread project data across two independent fetchers.
-    supabase.from('dld_projects').select('project_status, percent_completed, no_of_units').eq('area_id', areaId),
+    fetchDldProjectsForArea(areaId, areaName),
   ])
   const rows = [...(manual.data || []), ...(monthly.data || [])]
   if (rows.length) {
@@ -1270,7 +1286,7 @@ async function fetchPastTabData(areaId, areaName, keyDevelopers, zoneType, row) 
   }
 
 
-  const projRows = dldProjects.data || []
+  const projRows = dldProjectRows || []
   const active = projRows.filter((p) => p.project_status === 'ACTIVE')
   const avgCompletion = projRows.length
     ? Math.round(projRows.reduce((s, p) => s + (Number(p.percent_completed) || 0), 0) / projRows.length)

@@ -715,9 +715,17 @@ export async function fetchAreaProfile(slug) {
     .from('area_intelligence')
     .select('area_id, area_name_en, investment_score, gross_yield_pct, truvalu_psm, verdict, tx_7d, key_developers, zone_type, distress_pct, catalyst_score, buyer_nationalities, active_project_count, year_established, master_developer, total_area_ha, completion_rate, residential_units, parks_info, retail_info')
 
-  if (error) {
+    if (error) {
     console.error('Failed to load area_intelligence:', error)
-    return entry ? synthesizeProfile(entry) : null
+    if (!entry) return null
+    const base = FULL_PROFILES[slug] ?? synthesizeProfile(entry)
+    if (base.investor?.rentalYield) return base
+    const personaExtras = buildPersonaData(entry, {}, base.present, base.future)
+    return {
+      ...base,
+      investor: personaExtras.investor ?? base.investor,
+      owner: personaExtras.owner ?? base.owner,
+    }
   }
 
   const row = (data || []).find((r) => slugify(r.area_name_en || '') === slug)

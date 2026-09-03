@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MagnifyingGlass, ArrowRight } from '@phosphor-icons/react'
 import Nav from '../Nav'
@@ -6,7 +6,7 @@ import Footer from '../Footer'
 import MobileTabBar from '../MobileTabBar'
 import FloatingAdvisorButton from '../FloatingAdvisorButton'
 import VerdictBadge from '../widgets/VerdictBadge'
-import { AREA_LIST } from '../../data/areas'
+import { fetchAreaList } from '../../data/areas'
 
 const FILTERS = [
   { key: 'all', label: 'All' },
@@ -42,15 +42,27 @@ function AreaCard({ area }) {
 export default function AreasListPage() {
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
+  const [areaList, setAreaList] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+    fetchAreaList().then((list) => {
+      if (!mounted) return
+      setAreaList(list)
+      setLoading(false)
+    })
+    return () => { mounted = false }
+  }, [])
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return AREA_LIST.filter((a) => {
+    return areaList.filter((a) => {
       const matchesFilter = filter === 'all' || a.verdict === filter
       const matchesSearch = !q || a.name.toLowerCase().includes(q)
       return matchesFilter && matchesSearch
     })
-  }, [filter, search])
+  }, [areaList, filter, search])
 
   return (
     <div className="bg-cream text-ink pb-24 md:pb-0">
@@ -65,7 +77,7 @@ export default function AreasListPage() {
             Every Dubai area, scored.
           </h1>
           <p className="mt-2 max-w-[560px] text-base leading-relaxed text-muted">
-            A live Buy, Watch, or Hold signal for {AREA_LIST.length} Dubai neighborhoods — backed by real transaction data, not guesswork.
+          A live Buy, Watch, or Hold signal for {areaList.length} Dubai neighborhoods — backed by real transaction data, not guesswork.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -97,7 +109,11 @@ export default function AreasListPage() {
             </div>
           </div>
 
-          {filtered.length > 0 ? (
+          {loading ? (
+            <div className="mt-6 flex items-center justify-center rounded-[28px] border border-dashed border-line bg-white/60 px-6 py-16 text-center text-sm text-muted">
+              Loading live area scores…
+            </div>
+          ) : filtered.length > 0 ? (
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((area) => (
                 <AreaCard key={area.slug} area={area} />

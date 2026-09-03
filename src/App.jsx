@@ -1,4 +1,6 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { supabase } from './lib/supabase'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import ProductShowcase from './components/ProductShowcase'
@@ -19,6 +21,22 @@ import AreaDetailPage from './components/areas/AreaDetailPage'
 import LoginPage from './pages/LoginPage';
 
 function LandingPage() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      if (session) {
+        navigate('/chat', { replace: true })
+      }
+    }
+
+    checkSession()
+  }, [navigate])
+
   return (
     <div className="bg-cream text-ink pb-24 md:pb-0">
       <Nav />

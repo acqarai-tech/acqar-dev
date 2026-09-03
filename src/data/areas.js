@@ -1066,7 +1066,8 @@ const CATALYST_IMPACT = {
 async function fetchFutureTabData(areaId, row) {
   const [catalysts, projects] = await Promise.all([
     supabase.from('area_catalysts').select('id, name, catalyst_type, expected_date, confidence, description').eq('area_id', areaId).order('expected_date'),
-    supabase.from('dld_projects').select('project_name, developer_name, project_status, percent_completed, end_date, cnt_unit').eq('area_id', areaId),
+   
+supabase.from('dld_projects').select('project_name, developer_name, project_status, percent_completed, project_end_date, no_of_units').eq('area_id', areaId),
   ])
 
   const future = {}
@@ -1094,7 +1095,7 @@ async function fetchFutureTabData(areaId, row) {
 
   const projRows = projects.data || []
   const active = projRows.filter((p) => p.project_status === 'ACTIVE')
-  const totalUnits = projRows.reduce((s, p) => s + (Number(p.cnt_unit) || 0), 0)
+  const totalUnits = projRows.reduce((s, p) => s + (Number(p.no_of_units) || 0), 0)
   const nextYear = new Date().getFullYear() + 1
   const peakYear = new Date().getFullYear() + 2
   const activeCount = row.active_project_count > 0
@@ -1105,14 +1106,14 @@ async function fetchFutureTabData(areaId, row) {
   future.supply = [
     { label: 'Active projects in area', value: String(activeCount) },
     { label: 'Total pipeline units', value: totalUnits ? totalUnits.toLocaleString() : '—' },
-    { label: `Delivering ${nextYear}`, value: `${projRows.filter((p) => p.end_date?.startsWith(String(nextYear))).reduce((s, p) => s + (Number(p.cnt_unit) || 0), 0)} units` },
-    { label: `Delivering ${peakYear} (peak)`, value: `${projRows.filter((p) => p.end_date?.startsWith(String(peakYear))).reduce((s, p) => s + (Number(p.cnt_unit) || 0), 0)} units` },
+    { label: `Delivering ${nextYear}`, value: `${projRows.filter((p) => p.project_end_date?.startsWith(String(nextYear))).reduce((s, p) => s + (Number(p.no_of_units) || 0), 0)} units` },
+   { label: `Delivering ${peakYear} (peak)`, value: `${projRows.filter((p) => p.project_end_date?.startsWith(String(peakYear))).reduce((s, p) => s + (Number(p.no_of_units) || 0), 0)} units` },
   ]
 
   const psf = row.truvalu_psm ? Math.round(Number(row.truvalu_psm) / 10.764) : 1200
   future.projects = projRows.slice(0, 10).map((p) => ({
     name: p.project_name,
-    delivery: p.end_date ? `— ${new Date(p.end_date).getFullYear()}` : 'TBC',
+     delivery: p.project_end_date ? `— ${new Date(p.project_end_date).getFullYear()}` : 'TBC',
     psfFrom: `AED ${Math.round(psf * 0.85).toLocaleString()}`,
     // "sold" isn't a tracked DLD field — using construction progress as
     // the closest available proxy rather than fabricating a real number.
@@ -1224,7 +1225,7 @@ async function fetchPastTabData(areaId, areaName, keyDevelopers, zoneType, row) 
     // Reused for maturity below (completion rate, pipeline units) — same
     // table Future's fetchFutureTabData queries, cheap enough to run twice
     // rather than thread project data across two independent fetchers.
-    supabase.from('dld_projects').select('project_status, percent_completed, cnt_unit').eq('area_id', areaId),
+    supabase.from('dld_projects').select('project_status, percent_completed, no_of_units').eq('area_id', areaId),
   ])
   const rows = [...(manual.data || []), ...(monthly.data || [])]
   if (rows.length) {
@@ -1249,7 +1250,7 @@ async function fetchPastTabData(areaId, areaName, keyDevelopers, zoneType, row) 
     ? Math.round(projRows.reduce((s, p) => s + (Number(p.percent_completed) || 0), 0) / projRows.length)
     : null
  
-  const pipelineUnits = projRows.reduce((s, p) => s + (Number(p.cnt_unit) || 0), 0)
+const pipelineUnits = projRows.reduce((s, p) => s + (Number(p.no_of_units) || 0), 0)
   const availableListings = row?.investment_score != null ? Math.round(1500 + Number(row.investment_score) * 50) : null
   const appreciation5y = result.priceHistory?.length >= 2
     ? (((result.priceHistory[result.priceHistory.length - 1].value - result.priceHistory[0].value) / result.priceHistory[0].value) * 100).toFixed(1)

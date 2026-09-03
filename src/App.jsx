@@ -19,7 +19,7 @@ import PropertyValuations from './components/PropertyValuations'
 import AreasListPage from './components/areas/AreasListPage'
 import AreaDetailPage from './components/areas/AreaDetailPage'
 import LoginPage from './pages/LoginPage';
-import Registration from './pages/Registration
+import Registration from './pages/Registration';
 
 function LandingPage() {
   const navigate = useNavigate()

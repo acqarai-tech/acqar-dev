@@ -698,7 +698,10 @@ function synthesizeProfile(entry, dbRow) {
           { label: 'Dubai 2040 zone alignment', value: 'Under review' },
         ],
       },
-      supply: [{ label: 'Active projects in area', value: '— est.' }],
+      supply: [
+        { label: 'Active projects in area', value: '— est.' },
+        { label: 'Supply risk', value: 'Insufficient data — no tracked pipeline', wide: true },
+      ],
       projects: [],
     },
   }
@@ -735,7 +738,17 @@ export async function fetchAreaProfile(slug) {
   }
 
   const base = FULL_PROFILES[slug] ?? synthesizeProfile(entry, row)
-  if (!row?.area_id) return base
+  const needsPersona = !base.investor?.rentalYield
+
+  if (!row?.area_id) {
+    if (!needsPersona) return base
+    const personaExtras = buildPersonaData(entry, row ?? {}, base.present, base.future)
+    return {
+      ...base,
+      investor: personaExtras.investor ?? base.investor,
+      owner: personaExtras.owner ?? base.owner,
+    }
+  }
 
    const [pastExtras, presentExtras, futureExtras, comments] = await Promise.all([
     fetchPastTabData(row.area_id, entry.name, row.key_developers, row.zone_type, row),
@@ -769,9 +782,10 @@ export async function fetchAreaProfile(slug) {
       ...base.future,
       ...futureExtras.future,
       timeline: futureExtras.future?.timeline ?? base.future?.timeline,
+      supply: futureExtras.future?.supply ?? base.future?.supply,
     },
-    investor: personaExtras.investor ?? base.investor,
-    owner: personaExtras.owner ?? base.owner,
+        investor: needsPersona ? (personaExtras.investor ?? base.investor) : base.investor,
+    owner: needsPersona ? (personaExtras.owner ?? base.owner) : base.owner,
     ticker,
     // Empty array (not null/undefined) once we have a DB-linked area, so
     // the Discussion section — and its composer — always renders, even
@@ -1152,11 +1166,24 @@ async function fetchFutureTabData(areaId, row) {
     : active.length > 0
       ? active.length
       : Math.round(3 + (Number(row.investment_score) || 60) * 0.08)
+    const nextYearUnits = projRows
+    .filter((p) => p.project_end_date?.startsWith(String(nextYear)))
+    .reduce((s, p) => s + (Number(p.no_of_units) || 0), 0)
+  const peakYearUnits = projRows
+    .filter((p) => p.project_end_date?.startsWith(String(peakYear)))
+    .reduce((s, p) => s + (Number(p.no_of_units) || 0), 0)
+
+  const riskBase = totalUnits || (nextYearUnits + peakYearUnits)
+  const peakShare = riskBase ? peakYearUnits / riskBase : 0
+  const riskLevel = peakShare > 0.4 ? 'High' : peakShare > 0.2 ? 'Moderate' : 'Low'
+  const riskYear = peakYearUnits >= nextYearUnits ? peakYear : nextYear
+
   future.supply = [
     { label: 'Active projects in area', value: String(activeCount) },
     { label: 'Total pipeline units', value: totalUnits ? totalUnits.toLocaleString() : '—' },
-    { label: `Delivering ${nextYear}`, value: `${projRows.filter((p) => p.project_end_date?.startsWith(String(nextYear))).reduce((s, p) => s + (Number(p.no_of_units) || 0), 0)} units` },
-   { label: `Delivering ${peakYear} (peak)`, value: `${projRows.filter((p) => p.project_end_date?.startsWith(String(peakYear))).reduce((s, p) => s + (Number(p.no_of_units) || 0), 0)} units` },
+    { label: `Delivering ${nextYear}`, value: `${nextYearUnits} units` },
+    { label: `Delivering ${peakYear} (peak)`, value: `${peakYearUnits} units` },
+    { label: 'Supply risk', value: `${riskLevel} — watch ${riskYear}`, wide: true },
   ]
 
   const psf = row.truvalu_psm ? Math.round(Number(row.truvalu_psm) / 10.764) : 1200

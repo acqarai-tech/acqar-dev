@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import {
   MapPin,
@@ -30,7 +30,7 @@ import PersonaTimelinePanel from './PersonaTimelinePanel'
 import PastTabContent from './PastTabContent'
 import PresentTabContent from './PresentTabContent'
 import FutureTabContent from './FutureTabContent'
-import { getAreaProfile, hasFullProfile } from '../../data/areas'
+import { fetchAreaProfile, hasFullProfile } from '../../data/areas'
 
 const PERSONAS = [
   { key: 'firstTime', label: 'First-Time Buyer', Icon: HouseLine },
@@ -60,10 +60,30 @@ function Section({ eyebrow, title, children, className = '' }) {
 
 export default function AreaDetailPage() {
   const { slug } = useParams()
-  const profile = useMemo(() => getAreaProfile(slug), [slug])
+  const [profile, setProfile] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [persona, setPersona] = useState('firstTime')
   const [timelineTab, setTimelineTab] = useState('past')
   const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    let mounted = true
+    setLoading(true)
+    fetchAreaProfile(slug).then((p) => {
+      if (!mounted) return
+      setProfile(p)
+      setLoading(false)
+    })
+    return () => { mounted = false }
+  }, [slug])
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-cream text-sm text-muted">
+        Loading area report…
+      </div>
+    )
+  }
 
   if (!profile) return <Navigate to="/areas" replace />
 

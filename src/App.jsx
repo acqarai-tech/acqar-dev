@@ -19,6 +19,7 @@ import PropertyValuations from './components/PropertyValuations'
 import AreasListPage from './components/areas/AreasListPage'
 import AreaDetailPage from './components/areas/AreaDetailPage'
 import LoginPage from './pages/LoginPage';
+import Registration from './pages/Registration
 
 function LandingPage() {
   const navigate = useNavigate()
@@ -65,6 +66,7 @@ function App() {
       <Route path="/areas" element={<AreasListPage />} />
       <Route path="/areas/:slug" element={<AreaDetailPage />} />
        <Route path="/loginpage" element={<LoginPage />} />
+      <Route path="/register" element={<Registration />} />
     </Routes>
   )
 }

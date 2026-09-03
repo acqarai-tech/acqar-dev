@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Accordion from '@radix-ui/react-accordion'
 import { List, X, Sparkle, CaretDown } from '@phosphor-icons/react'
 import acqarLogo from '../assets/acqar-logo.webp'
 import { INVESTOR_TOOLS_ITEMS, INSIGHTS_ITEMS } from '../data/navMenus'
+import { supabase } from "../lib/supabase";
 
 function Logo() {
   return (
@@ -34,6 +35,7 @@ function NavDropdown({ label, items, delay }) {
   const [open, setOpen] = useState(false)
   const closeTimer = useRef(null)
   const rootRef = useRef(null)
+
 
   const openNow = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current)
@@ -167,9 +169,26 @@ function MobileNavAccordion({ value, label, items }) {
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+ 
   const rowRef = useRef(null)
   const [headerHeight, setHeaderHeight] = useState(0)
+  const navigate = useNavigate()
+  const [session, setSession] = useState(null)
+
+
+  useEffect(() => {
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    setSession(session)
+  })
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    setSession(session)
+  })
+
+  return () => subscription.unsubscribe()
+}, [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -235,7 +254,12 @@ export default function Nav() {
                 )}
               </nav>
               <div className="flex items-center gap-4">
-                <a href="#" className="cursor-pointer text-sm text-ink/80 transition-colors hover:text-ink">Log in</a>
+<Link
+  to="/loginpage"
+  className="cursor-pointer text-sm text-ink/80 transition-colors hover:text-ink"
+>
+  Log in
+</Link>
                 <Link
                   to="/chat"
                   className="cursor-pointer rounded-full bg-accent px-5 py-2 text-sm font-medium text-white shadow-[var(--shadow-sm)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[var(--shadow-md)] active:scale-95"
@@ -316,7 +340,7 @@ export default function Nav() {
                 </a>
               </Dialog.Close>
               <MobileNavAccordion value="insights" label="Insights" items={INSIGHTS_ITEMS} />
-              {isLoggedIn ? (
+              {session ? (
                 <>
                   <Dialog.Close asChild>
                     <a
@@ -326,22 +350,25 @@ export default function Nav() {
                       Profile
                     </a>
                   </Dialog.Close>
-                  <button
-                    type="button"
-                    onClick={() => setIsLoggedIn(false)}
-                    className="cursor-pointer rounded-lg px-2 py-3 text-left text-base text-ink/80 transition-colors hover:bg-ink/5 hover:text-ink"
-                  >
-                    Logout
-                  </button>
+                 <button
+  type="button"
+  onClick={async () => {
+    await supabase.auth.signOut()
+    navigate('/loginpage')
+  }}
+  className="cursor-pointer rounded-lg px-2 py-3 text-left text-base text-ink/80 transition-colors hover:bg-ink/5 hover:text-ink"
+>
+  Logout
+</button>
                 </>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsLoggedIn(true)}
-                  className="cursor-pointer rounded-lg px-2 py-3 text-left text-base text-ink/80 transition-colors hover:bg-ink/5 hover:text-ink"
-                >
-                  Login
-                </button>
+               <button
+  type="button"
+  onClick={() => navigate('/loginpage')}
+  className="cursor-pointer rounded-lg px-2 py-3 text-left text-base text-ink/80 transition-colors hover:bg-ink/5 hover:text-ink"
+>
+  Login
+</button>
               )}
             </Accordion.Root>
           </Dialog.Content>

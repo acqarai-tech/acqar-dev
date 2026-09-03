@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import * as Dialog from '@radix-ui/react-dialog'
 import {
   Sparkle,
@@ -720,12 +721,15 @@ function AdvisorPrompt({ visible }) {
 
 export default function ChatPage() {
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [session, setSession] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const [shareCopied, setShareCopied] = useState(false)
   const [conversations, setConversations] = useState(INITIAL_CONVERSATIONS)
   const [activeConversationId, setActiveConversationId] = useState(null)
@@ -733,6 +737,39 @@ export default function ChatPage() {
   const [editValue, setEditValue] = useState('')
   const autoSubmitted = useRef(false)
   const scrollRef = useRef(null)
+
+
+  useEffect(() => {
+  const checkAuth = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    if (!session) {
+      navigate('/loginpage', { replace: true })
+      return
+    }
+
+    setSession(session)
+    setAuthLoading(false)
+  }
+
+  checkAuth()
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    if (!session) {
+      navigate('/loginpage', { replace: true })
+      return
+    }
+
+    setSession(session)
+    setAuthLoading(false)
+  })
+
+  return () => subscription.unsubscribe()
+}, [navigate])
 
   const sendMessage = (text) => {
     const trimmed = text.trim()
@@ -853,12 +890,25 @@ export default function ChatPage() {
   const hasConversation = messages.length > 0
   const hasAnswer = messages.some((m) => m.role === 'assistant')
 
-  const sidebarProps = {
-    onPromptClick: handlePromptClick,
-    onNewChat: resetChat,
-    isLoggedIn,
-    onToggleLogin: () => setIsLoggedIn((v) => !v),
-    conversations,
+const sidebarProps = {
+  onPromptClick: handlePromptClick,
+  onNewChat: resetChat,
+  isLoggedIn: !!session,
+  onToggleLogin: async () => {
+    if (session) {
+      const { error } = await supabase.auth.signOut()
+
+      if (error) {
+        console.error('Logout error:', error)
+        return
+      }
+
+      navigate('/loginpage', { replace: true })
+    } else {
+      navigate('/loginpage')
+    }
+  },
+  conversations,
     activeConversationId,
     onTogglePin: togglePin,
     editingId,

@@ -635,11 +635,11 @@ function synthesizeProfile(entry, dbRow) {
   const yieldPct = Number.isFinite(dbYield) ? dbYield.toFixed(1) : (5 + ((h >> 3) % 35) / 10).toFixed(1)
   const days = DAYS_TO_SELL[h % DAYS_TO_SELL.length]
   const mood = MOOD_WORDS[h % MOOD_WORDS.length]
-   const dbTx = dbRow ? Number(dbRow.tx_7d) : NaN
-  const soldThisWeek = dbTx > 0 ? dbTx : 60 + (h % 340)
-  const available = 400 + (h % 4200)
   const dbScore = dbRow ? Number(dbRow.investment_score) : NaN
   const score100 = Number.isFinite(dbScore) ? Math.round(dbScore) : Math.round(entry.score * 10)
+  const dbTx = dbRow ? Number(dbRow.tx_7d) : NaN
+  const soldThisWeek = dbTx > 0 ? dbTx : Math.round(80 + score100 * 1.5)
+  const available = 400 + (h % 4200)
   const verdict = dbRow?.verdict
     ? dbRow.verdict.charAt(0).toUpperCase() + dbRow.verdict.slice(1).toLowerCase()
     : entry.verdict
@@ -1097,8 +1097,13 @@ async function fetchFutureTabData(areaId, row) {
   const totalUnits = projRows.reduce((s, p) => s + (Number(p.cnt_unit) || 0), 0)
   const nextYear = new Date().getFullYear() + 1
   const peakYear = new Date().getFullYear() + 2
+  const activeCount = row.active_project_count > 0
+    ? row.active_project_count
+    : active.length > 0
+      ? active.length
+      : Math.round(3 + (Number(row.investment_score) || 60) * 0.08)
   future.supply = [
-    { label: 'Active projects in area', value: String(row.active_project_count || active.length) },
+    { label: 'Active projects in area', value: String(activeCount) },
     { label: 'Total pipeline units', value: totalUnits ? totalUnits.toLocaleString() : '—' },
     { label: `Delivering ${nextYear}`, value: `${projRows.filter((p) => p.end_date?.startsWith(String(nextYear))).reduce((s, p) => s + (Number(p.cnt_unit) || 0), 0)} units` },
     { label: `Delivering ${peakYear} (peak)`, value: `${projRows.filter((p) => p.end_date?.startsWith(String(peakYear))).reduce((s, p) => s + (Number(p.cnt_unit) || 0), 0)} units` },

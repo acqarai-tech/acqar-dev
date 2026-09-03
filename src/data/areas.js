@@ -71,6 +71,15 @@ export function slugify(name) {
     .replace(/^-+|-+$/g, '')
 }
 
+
+const DLD_AREA_NAME_MAP = {
+  'Jumeirah Village Triangle (JVT)': 'Al Barsha South Fifth',
+  'Dubai Hills Estate': 'Hadaeq Sheikh Mohammed Bin Rashid',
+  'Al Jaddaf': 'Al Jadaf',
+  'DAMAC Hills 2': 'Madinat Hind 4',
+  'Jumeirah Lake Towers (JLT)': 'Al Thanyah Fifth',
+}
+
 function hash(str) {
   let h = 0
   for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0
@@ -677,9 +686,9 @@ export async function fetchAreaProfile(slug) {
 
   let entry = AREA_LIST.find((a) => a.slug === slug)
 
-  const { data, error } = await supabase
+   const { data, error } = await supabase
     .from('area_intelligence')
-    .select('area_id, area_name_en, investment_score, gross_yield_pct, truvalu_psm, verdict, tx_7d')
+    .select('area_id, area_name_en, investment_score, gross_yield_pct, truvalu_psm, verdict, tx_7d, key_developers, zone_type')
 
   if (error) {
     console.error('Failed to load area_intelligence:', error)
@@ -703,7 +712,82 @@ export async function fetchAreaProfile(slug) {
     }
   }
 
-  return synthesizeProfile(entry, row)
+  const base = synthesizeProfile(entry, row)
+  if (!row?.area_id) return base
+
+  const pastExtras = await fetchPastTabData(row.area_id, entry.name, row.key_developers, row.zone_type)
+  return { ...base, ...pastExtras }
+}
+
+
+async function fetchPastTabData(areaId, areaName, keyDevelopers, zoneType) {
+  const result = {}
+
+  const [monthly, manual] = await Promise.all([
+    supabase.from('price_history_monthly').select('sale_year, sale_month, psf').eq('area_id', areaId).gte('sale_year', 2020),
+    supabase.from('price_history_manual').select('sale_year, sale_month, psf').eq('area_id', areaId).gte('sale_year', 2020),
+  ])
+  const rows = [...(manual.data || []), ...(monthly.data || [])]
+  if (rows.length) {
+    const byYear = {}
+    rows.forEach((r) => {
+      if (!byYear[r.sale_year]) byYear[r.sale_year] = []
+      byYear[r.sale_year].push(Number(r.psf))
+    })
+    result.priceHistory = Object.entries(byYear)
+      .sort(([a], [b]) => a - b)
+      .slice(-5)
+      .map(([year, vals]) => ({
+        label: year,
+        value: Math.round(vals.reduce((s, v) => s + v, 0) / vals.length),
+      }))
+  }
+
+  if (keyDevelopers?.length) {
+    const list = keyDevelopers.filter((d) => d !== 'Various')
+    if (list.length) {
+      const { data } = await supabase
+        .from('developer_track_records')
+        .select('developer_name, on_time_pct, avg_delay_months, star_rating, market_segment')
+        .in('developer_name', list)
+        .order('on_time_pct', { ascending: false })
+      if (data?.length) {
+        result.developers = {
+          columns: ['Developer', 'On-time %', 'Avg delay', 'Rating', 'Segment'],
+          rows: data.map((d) => [
+            d.developer_name,
+            `${d.on_time_pct}%`,
+            d.avg_delay_months === 0 ? 'On time / early' : `~${d.avg_delay_months} months`,
+            d.star_rating,
+            d.market_segment,
+          ]),
+        }
+      }
+    }
+  }
+
+  if (zoneType) {
+    const { data } = await supabase
+      .from('area_shock_impacts')
+      .select('event_name, event_period, price_impact_pct, recovery_months, recovery_driver, notes')
+      .eq('zone_type', zoneType)
+      .order('id', { ascending: true })
+    if (data?.length) {
+      result.resilience = {
+        columns: ['Event', 'Period', 'Price impact', 'Recovery time', 'What drove recovery', 'Happening now?'],
+        rows: data.map((s) => [
+          s.event_name,
+          s.event_period,
+          s.price_impact_pct != null ? `${s.price_impact_pct > 0 ? '+' : ''}${s.price_impact_pct}%` : '—',
+          s.recovery_months ? `${s.recovery_months} months` : 'N/A (rose)',
+          s.recovery_driver,
+          s.notes,
+        ]),
+      }
+    }
+  }
+
+  return result
 }
 
 export function getAreaProfile(slug) {

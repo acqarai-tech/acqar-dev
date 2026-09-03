@@ -164,7 +164,7 @@ const VERDICT_STYLES = {
   Invest: 'bg-accent/10 text-accent-dark',
 }
 
-function ProfileCard({ collapsed, isLoggedIn, userEmail, onToggleLogin }) {
+function ProfileCard({ collapsed, isLoggedIn, userEmail, userPlan, onToggleLogin }) {
   const initial = userEmail?.[0]?.toUpperCase() || 'U'
 
   if (collapsed) {
@@ -206,7 +206,9 @@ function ProfileCard({ collapsed, isLoggedIn, userEmail, onToggleLogin }) {
         </span>
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-ink">{userEmail || 'Account'}</p>
-          <p className="text-xs text-muted">Free plan</p>
+          <p className="text-xs text-muted">
+            {userPlan === 'pro' || userPlan === 'elite' ? 'Pro plan' : 'Free plan'}
+          </p>
         </div>
       </div>
       <button
@@ -283,6 +285,7 @@ function SidebarContent({
   onToggleCollapse,
   isLoggedIn,
   userEmail,
+  userPlan,
   onToggleLogin,
   conversations,
   activeConversationId,
@@ -402,7 +405,7 @@ function SidebarContent({
       )}
 
       <div className={`flex flex-col gap-3 border-t border-line px-4 py-4 ${collapsed ? 'items-center px-2' : ''}`}>
-                <ProfileCard collapsed={collapsed} isLoggedIn={isLoggedIn} userEmail={userEmail} onToggleLogin={onToggleLogin} />
+                <ProfileCard collapsed={collapsed} isLoggedIn={isLoggedIn} userEmail={userEmail} userPlan={userPlan} onToggleLogin={onToggleLogin} />
       </div>
     </div>
   )
@@ -731,8 +734,9 @@ export default function ChatPage() {
   const [thinking, setThinking] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [session, setSession] = useState(null)
+   const [session, setSession] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [userPlan, setUserPlan] = useState('free')
   const [shareCopied, setShareCopied] = useState(false)
   const [conversations, setConversations] = useState(INITIAL_CONVERSATIONS)
   const [activeConversationId, setActiveConversationId] = useState(null)
@@ -773,6 +777,30 @@ export default function ChatPage() {
 
   return () => subscription.unsubscribe()
 }, [navigate])
+
+
+    useEffect(() => {
+    if (!session?.user?.id) return
+    let mounted = true
+
+    const loadPlan = async () => {
+      const { data, error } = await supabase
+        .from('users')
+        .select('plan')
+        .eq('id', session.user.id)
+        .maybeSingle()
+
+      if (!mounted) return
+      if (error) {
+        console.error('Failed to load user plan:', error)
+        return
+      }
+      setUserPlan(data?.plan || 'free')
+    }
+
+    loadPlan()
+    return () => { mounted = false }
+  }, [session])
 
   const sendMessage = (text) => {
     const trimmed = text.trim()
@@ -906,6 +934,7 @@ const sidebarProps = {
   onNewChat: resetChat,
   isLoggedIn: !!session,
   userEmail: session?.user?.email,
+  userPlan,
   onToggleLogin: async () => {
     if (session) {
       const { error } = await supabase.auth.signOut()

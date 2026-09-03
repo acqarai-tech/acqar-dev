@@ -763,7 +763,7 @@ export default function ChatPage() {
     data: { subscription },
   } = supabase.auth.onAuthStateChange((_event, session) => {
     if (!session) {
-      navigate('/loginpage', { replace: true })
+      navigate('/', { replace: true })
       return
     }
 

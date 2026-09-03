@@ -418,7 +418,10 @@ export default function PropertyValuations() {
                 <div className="mt-6 text-center">
                 <button
                   type="button"
-                  onClick={() => supabase.auth.signOut()}
+                  onClick={async () => {
+                    await supabase.auth.signOut()
+                    navigate('/')
+                  }}
                   className="cursor-pointer text-xs text-muted underline decoration-line underline-offset-2 transition-colors hover:text-accent-dark"
                 >
                   Log out

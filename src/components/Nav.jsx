@@ -5,7 +5,7 @@ import * as Accordion from '@radix-ui/react-accordion'
 import { List, X, Sparkle, CaretDown } from '@phosphor-icons/react'
 import acqarLogo from '../assets/acqar-logo.webp'
 import { INVESTOR_TOOLS_ITEMS, INSIGHTS_ITEMS } from '../data/navMenus'
-import { supabase } from "../lib/supabase";
+import { supabase } from '../lib/supabase'
 
 function Logo() {
   return (
@@ -254,12 +254,31 @@ export default function Nav() {
                 )}
               </nav>
               <div className="flex items-center gap-4">
-<Link
-  to="/loginpage"
-  className="cursor-pointer text-sm text-ink/80 transition-colors hover:text-ink"
->
-  Log in
-</Link>
+{session ? (
+  <button
+    type="button"
+    onClick={async () => {
+      const { error } = await supabase.auth.signOut()
+
+      if (error) {
+        console.error('Logout error:', error)
+        return
+      }
+
+      navigate('/loginpage')
+    }}
+    className="cursor-pointer text-sm text-ink/80 transition-colors hover:text-ink"
+  >
+    Log out
+  </button>
+) : (
+  <Link
+    to="/loginpage"
+    className="cursor-pointer text-sm text-ink/80 transition-colors hover:text-ink"
+  >
+    Log in
+  </Link>
+)}
                 <Link
                   to="/chat"
                   className="cursor-pointer rounded-full bg-accent px-5 py-2 text-sm font-medium text-white shadow-[var(--shadow-sm)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[var(--shadow-md)] active:scale-95"
@@ -353,7 +372,14 @@ export default function Nav() {
                  <button
   type="button"
   onClick={async () => {
-    await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut()
+
+    if (error) {
+      console.error('Logout error:', error)
+      return
+    }
+
+    setMenuOpen(false)
     navigate('/loginpage')
   }}
   className="cursor-pointer rounded-lg px-2 py-3 text-left text-base text-ink/80 transition-colors hover:bg-ink/5 hover:text-ink"

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import posthog from "posthog-js";
 import acqarLogo from "../assets/acqar-logo.webp";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [step, setStep]       = useState("email"); // "email" | "otp"
   const [email, setEmail]     = useState("");
@@ -76,7 +77,8 @@ if (isAdmin && session) {
   await supabase.auth.signOut(); // keep admin out of the public session
   navigate("/admin-dashboard", { replace: true });
 } else {
-  navigate("/chat", { replace: true });
+  const redirectTo = location.state?.from || "/chat";
+  navigate(redirectTo, { replace: true });
 }
     } catch (err) {
       setError(err?.message || "Invalid or expired code. Please try again.");

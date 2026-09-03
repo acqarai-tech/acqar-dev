@@ -1,4 +1,5 @@
 import { Snowflake, Train, Car, Storefront, GraduationCap, FirstAidKit, Airplane } from '@phosphor-icons/react'
+import { supabase } from '../lib/supabase'
 
 // Demo/reference data only — for building and reviewing the Areas list and
 // Area Specialist detail pages. Swap for real DLD-backed data once that
@@ -567,29 +568,72 @@ export const AREA_LIST = AREA_NAMES.map((name) => {
   }
 }).sort((a, b) => a.name.localeCompare(b.name))
 
+// Live version of AREA_LIST — pulls real score/verdict from the
+// area_intelligence table, falling back to the synthetic AREA_LIST
+// above (per area) wherever a DB row is missing or the fetch fails.
+export async function fetchAreaList() {
+  const { data, error } = await supabase
+    .from('area_intelligence')
+    .select('area_id, area_name_en, investment_score, gross_yield_pct, truvalu_psm, verdict')
+
+  if (error) {
+    console.error('Failed to load area_intelligence:', error)
+    return AREA_LIST
+  }
+
+  const bySlug = new Map((data || []).map((row) => [slugify(row.area_name_en || ''), row]))
+
+  return AREA_NAMES.map((name) => {
+    const slug = slugify(name)
+    const full = FULL_PROFILES[slug]
+    if (full) {
+      return { name, slug, score: Math.round(full.score / 10) / 10, verdict: full.verdict }
+    }
+
+    const row = bySlug.get(slug)
+    if (row && row.investment_score != null) {
+      const score = Math.round(Number(row.investment_score)) / 10
+      const verdict = row.verdict
+        ? row.verdict.charAt(0).toUpperCase() + row.verdict.slice(1).toLowerCase()
+        : verdictFor(score)
+      return { name, slug, score, verdict }
+    }
+
+    const score = scoreFor(name)
+    return { name, slug, score, verdict: verdictFor(score) }
+  }).sort((a, b) => a.name.localeCompare(b.name))
+}
+
 const MOOD_WORDS = ['Slow', 'Steady', 'Warming', 'Active', 'Hot']
 const DAYS_TO_SELL = [28, 33, 38, 43, 51, 58]
 
 // Generates a lightweight-but-complete profile for any area that doesn't
 // have hand-authored content above, so every entry in AREA_LIST resolves to
 // a working detail page instead of a dead link.
-function synthesizeProfile(entry) {
+function synthesizeProfile(entry, dbRow) {
   const h = hash(entry.name)
-  const pricePerSqft = 900 + (h % 1400)
-  const yieldPct = (5 + ((h >> 3) % 35) / 10).toFixed(1)
+  const psm = dbRow ? Number(dbRow.truvalu_psm) || 0 : 0
+  const pricePerSqft = psm ? Math.round(psm / 10.764) : 900 + (h % 1400)
+  const dbYield = dbRow ? Number(dbRow.gross_yield_pct) : NaN
+  const yieldPct = Number.isFinite(dbYield) ? dbYield.toFixed(1) : (5 + ((h >> 3) % 35) / 10).toFixed(1)
   const days = DAYS_TO_SELL[h % DAYS_TO_SELL.length]
   const mood = MOOD_WORDS[h % MOOD_WORDS.length]
-  const soldThisWeek = 60 + (h % 340)
+  const dbTx = dbRow ? Number(dbRow.tx_7d) : NaN
+  const soldThisWeek = Number.isFinite(dbTx) ? dbTx : 60 + (h % 340)
   const available = 400 + (h % 4200)
-  const score100 = Math.round(entry.score * 10)
+  const dbScore = dbRow ? Number(dbRow.investment_score) : NaN
+  const score100 = Number.isFinite(dbScore) ? Math.round(dbScore) : Math.round(entry.score * 10)
+  const verdict = dbRow?.verdict
+    ? dbRow.verdict.charAt(0).toUpperCase() + dbRow.verdict.slice(1).toLowerCase()
+    : entry.verdict
 
   return {
     slug: entry.slug,
     name: entry.name,
-    tag: `${entry.verdict === 'Buy' ? 'Emerging' : 'Established'} · Residential District`,
-    zone: entry.verdict === 'Buy' ? 'Growth' : 'Established',
+    tag: `${verdict === 'Buy' ? 'Emerging' : 'Established'} · Residential District`,
+    zone: verdict === 'Buy' ? 'Growth' : 'Established',
     score: score100,
-    verdict: entry.verdict,
+    verdict,
     outlookLabel: '12-month outlook · Aug 2026',
     scoreBreakdown: [
       { label: 'Are people buying?', value: Math.min(96, score100 + (h % 15) - 5) },
@@ -610,13 +654,33 @@ function synthesizeProfile(entry) {
       label: String(2022 + i),
       value: Math.round(pricePerSqft * (0.78 + i * 0.055)),
     })),
-    maturity: [
-      { label: 'Zone', value: entry.verdict === 'Buy' ? 'Growth corridor' : 'Established' },
-      { label: 'Current signal score', value: `${entry.score.toFixed(1)}/10` },
+       maturity: [
+      { label: 'Zone', value: verdict === 'Buy' ? 'Growth corridor' : 'Established' },
+      { label: 'Current signal score', value: `${(score100 / 10).toFixed(1)}/10` },
       { label: 'Typical rental yield', value: `${yieldPct}%` },
       { label: 'Active listings', value: available.toLocaleString() },
     ],
   }
+}
+
+
+export async function fetchAreaProfile(slug) {
+  if (FULL_PROFILES[slug]) return FULL_PROFILES[slug]
+
+  const entry = AREA_LIST.find((a) => a.slug === slug)
+  if (!entry) return null
+
+  const { data, error } = await supabase
+    .from('area_intelligence')
+    .select('area_id, area_name_en, investment_score, gross_yield_pct, truvalu_psm, verdict, tx_7d')
+
+  if (error) {
+    console.error('Failed to load area_intelligence:', error)
+    return synthesizeProfile(entry)
+  }
+
+  const row = (data || []).find((r) => slugify(r.area_name_en || '') === slug)
+  return synthesizeProfile(entry, row)
 }
 
 export function getAreaProfile(slug) {

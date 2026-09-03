@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import {
   Plus,
   ArrowSquareOut,
@@ -181,11 +183,34 @@ function LoginGate({ onLogin }) {
 }
 
 export default function PropertyValuations() {
+  const navigate = useNavigate()
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
-  // No auth/backend wired in yet — this local toggle stands in for a real
-  // session so both states can be reviewed. Swap for real auth state later.
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [session, setSession] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      setSession(session)
+      setAuthLoading(false)
+    }
+
+    checkAuth()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+      setAuthLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const isLoggedIn = !!session
 
   const filteredReports = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -214,11 +239,13 @@ export default function PropertyValuations() {
                 Manage and monitor every valuation you've generated for Dubai properties.
               </p>
             </div>
-            {isLoggedIn && <NewValuationButton className="w-full sm:w-auto" />}
+                    {isLoggedIn && <NewValuationButton className="w-full sm:w-auto" />}
           </div>
 
-          {!isLoggedIn ? (
-            <LoginGate onLogin={() => setIsLoggedIn(true)} />
+          {authLoading ? (
+            <div className="mt-8 animate-pulse text-sm text-muted">Loading…</div>
+          ) : !isLoggedIn ? (
+            <LoginGate onLogin={() => navigate('/loginpage')} />
           ) : (
             <>
               {/* Stats */}
@@ -336,10 +363,10 @@ export default function PropertyValuations() {
                 </a>
               </div>
 
-              <div className="mt-6 text-center">
+                <div className="mt-6 text-center">
                 <button
                   type="button"
-                  onClick={() => setIsLoggedIn(false)}
+                  onClick={() => supabase.auth.signOut()}
                   className="cursor-pointer text-xs text-muted underline decoration-line underline-offset-2 transition-colors hover:text-accent-dark"
                 >
                   Log out

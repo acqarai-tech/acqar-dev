@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import {
   Plus,
@@ -184,6 +184,7 @@ function LoginGate({ onLogin }) {
 
 export default function PropertyValuations() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [session, setSession] = useState(null)
@@ -244,8 +245,8 @@ export default function PropertyValuations() {
 
           {authLoading ? (
             <div className="mt-8 animate-pulse text-sm text-muted">Loading…</div>
-          ) : !isLoggedIn ? (
-            <LoginGate onLogin={() => navigate('/loginpage')} />
+                   ) : !isLoggedIn ? (
+            <LoginGate onLogin={() => navigate('/loginpage', { state: { from: location.pathname } })} />
           ) : (
             <>
               {/* Stats */}

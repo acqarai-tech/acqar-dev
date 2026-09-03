@@ -915,7 +915,7 @@ const sidebarProps = {
         return
       }
 
-      navigate('/loginpage', { replace: true })
+      navigate('/', { replace: true })
     } else {
       navigate('/loginpage')
     }

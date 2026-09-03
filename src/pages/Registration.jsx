@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import posthog from "posthog-js";
+import acqarLogo from "../assets/acqar-logo.webp";
 
 
 const ROLES = ["Investor", "Buyer", "Seller", "Broker / Real Estate Agent"];
@@ -341,9 +342,9 @@ await supabase.auth.updateUser({
   style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
   onClick={() => navigate("/")}
 >
-  <div style={styles.logoBox}>
-    <img src="/favicon-32x32.png" alt="ACQAR" width={22} height={22} style={{ display: "block" }} />
-  </div>
+ <div style={styles.logoBox}>
+  <img src={acqarLogo} alt="ACQAR" width={22} height={22} style={{ display: "block" }} />
+</div>
 
   <h1 className="text-xl sm:text-2xl font-black tracking-tighter uppercase whitespace-nowrap">
     <span style={{ color: "var(--color-accent)" }}>ACQ</span>

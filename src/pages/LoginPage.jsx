@@ -211,7 +211,7 @@ if (isAdmin && session) {
 
         <p style={styles.signupRow}>
           Don't have an account?{" "}
-          <span style={styles.signupLink} onClick={() => navigate("/complete-profile")}>
+          <span style={styles.signupLink} onClick={() => navigate("/register")}>
             Request Access
           </span>
         </p>

@@ -466,11 +466,11 @@ function verdictFor(score) {
 
 
 
-// const FULL_PROFILES = {
-//   [JVC_PROFILE.slug]: JVC_PROFILE,
+const FULL_PROFILES = {
+  // [JVC_PROFILE.slug]: JVC_PROFILE,
 
  
-// }
+}
 
 // Areas with a hand-authored full profile must show the SAME score/verdict
 // in the list as on their detail page — derive from the profile (score is

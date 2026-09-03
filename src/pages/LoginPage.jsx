@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-// import posthog from "posthog-js";
+import posthog from "posthog-js";
 
 export default function LoginPage() {
   const navigate = useNavigate();

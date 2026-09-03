@@ -765,7 +765,11 @@ export async function fetchAreaProfile(slug) {
     resilience: pastExtras.resilience ?? base.resilience,
     present: presentExtras.present ?? base.present,
     pricing: presentExtras.pricing ?? base.pricing,
-    future: futureExtras.future ?? base.future,
+        future: {
+      ...base.future,
+      ...futureExtras.future,
+      timeline: futureExtras.future?.timeline ?? base.future?.timeline,
+    },
     investor: personaExtras.investor ?? base.investor,
     owner: personaExtras.owner ?? base.owner,
     ticker,

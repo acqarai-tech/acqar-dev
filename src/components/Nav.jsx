@@ -265,7 +265,7 @@ export default function Nav() {
         return
       }
 
-      navigate('/loginpage')
+      navigate('/')
     }}
     className="cursor-pointer text-sm text-ink/80 transition-colors hover:text-ink"
   >
@@ -380,7 +380,7 @@ export default function Nav() {
     }
 
     setMenuOpen(false)
-    navigate('/loginpage')
+    navigate('/')
   }}
   className="cursor-pointer rounded-lg px-2 py-3 text-left text-base text-ink/80 transition-colors hover:bg-ink/5 hover:text-ink"
 >

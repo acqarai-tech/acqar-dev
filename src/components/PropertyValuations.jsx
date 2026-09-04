@@ -71,8 +71,7 @@ function NewValuationButton({ className = '' }) {
   return (
     <a
       href={NEW_VALUATION_URL}
-      target="_blank"
-      rel="noopener noreferrer"
+
       className={`inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white shadow-[var(--shadow-glow)] transition-all duration-200 hover:brightness-105 active:scale-95 ${className}`}
     >
       <Plus weight="bold" size={16} />
@@ -143,7 +142,7 @@ function ReportCard({ report }) {
 
         <button
   type="button"
-onClick={() => window.open(`${REPORT_URL_BASE}?id=${report.id}`, '_blank', 'noopener,noreferrer')}
+onClick={() => { window.location.href = `${REPORT_URL_BASE}?id=${report.id}` }}
   className="flex cursor-pointer items-center gap-1 text-sm font-medium text-accent-dark transition-colors hover:text-accent"
 >
   View report

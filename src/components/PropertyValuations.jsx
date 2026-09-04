@@ -143,7 +143,7 @@ function ReportCard({ report }) {
 
         <button
   type="button"
-  onClick={() => window.open(`${REPORT_URL_BASE}/${report.id}`, '_blank', 'noopener,noreferrer')}
+onClick={() => window.open(`${REPORT_URL_BASE}?id=${report.id}`, '_blank', 'noopener,noreferrer')}
   className="flex cursor-pointer items-center gap-1 text-sm font-medium text-accent-dark transition-colors hover:text-accent"
 >
   View report

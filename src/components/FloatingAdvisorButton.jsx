@@ -1,6 +1,8 @@
 import { WhatsappLogo } from '@phosphor-icons/react'
 
 const WHATSAPP_GREEN = '#25D366'
+const WHATSAPP_NUMBER = '971508696331'
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`
 
 // Desktop-only — mobile gets the "Advisor" tab in MobileTabBar instead.
 // href is a placeholder pending the real WhatsApp business number.
@@ -10,7 +12,9 @@ const WHATSAPP_GREEN = '#25D366'
 export default function FloatingAdvisorButton() {
   return (
     <a
-      href="#"
+     href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
       aria-label="Chat with a property advisor on WhatsApp"
       title="Ask a property advisor on WhatsApp"
       className="group fixed bottom-8 right-8 z-50 hidden cursor-pointer md:block"

@@ -117,7 +117,7 @@ import LoginPage from './pages/LoginPage';
 import Registration from './pages/Registration';
 
 
-
+function LandingPage() {
   return (
     <div className="bg-cream text-ink pb-24 md:pb-0">
       <Nav />

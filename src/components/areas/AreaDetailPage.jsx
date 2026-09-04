@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate, Navigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../../lib/supabase'
 import {
   MapPin,
   CaretRight,

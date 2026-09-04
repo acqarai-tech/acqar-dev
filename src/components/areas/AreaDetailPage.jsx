@@ -91,8 +91,7 @@ export default function AreaDetailPage() {
     return () => { mounted = false }
   }, [slug])
 
-  if (loading) {
-    if (!authChecked || loading) {
+  if (!authChecked || loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-cream text-sm text-muted">
         Loading area report…
@@ -101,7 +100,7 @@ export default function AreaDetailPage() {
   }
 
   if (!profile) return <Navigate to="/areas" replace />
-
+  
   const isFull = hasFullProfile(slug)
   const hasPersonaTimeline = Boolean(profile.investor && profile.owner)
 

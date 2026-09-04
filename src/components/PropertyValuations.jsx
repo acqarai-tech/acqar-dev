@@ -18,6 +18,7 @@ import MobileTabBar from './MobileTabBar'
 import FloatingAdvisorButton from './FloatingAdvisorButton'
 
 const NEW_VALUATION_URL = 'https://www.acqar.com/valuation'
+const REPORT_URL_BASE = 'https://www.acqar.com/report'
 
 const FILTERS = [
   { key: 'all', label: 'All' },
@@ -94,7 +95,7 @@ function StatCard({ label, value, tag }) {
 }
 
 function ReportCard({ report }) {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   return (
     <div className="group flex flex-col rounded-2xl border border-line bg-white p-5 shadow-[var(--shadow-xs)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[var(--shadow-md)]">
       <div className="flex items-start justify-between gap-3">
@@ -131,14 +132,23 @@ function ReportCard({ report }) {
 
       <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
         <p className="text-xs text-muted">{report.date}</p>
-        <button
+        {/* <button
           type="button"
           onClick={() => navigate(`/report?id=${report.id}`)}
           className="flex cursor-pointer items-center gap-1 text-sm font-medium text-accent-dark transition-colors hover:text-accent"
         >
           View report
           <ArrowRight weight="bold" size={13} className="transition-transform duration-200 group-hover:translate-x-0.5" />
-        </button>
+        </button> */}
+
+        <button
+  type="button"
+  onClick={() => window.open(`${REPORT_URL_BASE}/${report.id}`, '_blank', 'noopener,noreferrer')}
+  className="flex cursor-pointer items-center gap-1 text-sm font-medium text-accent-dark transition-colors hover:text-accent"
+>
+  View report
+  <ArrowRight weight="bold" size={13} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+</button>
       </div>
     </div>
   )

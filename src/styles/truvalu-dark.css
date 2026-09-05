@@ -1,0 +1,317 @@
+.truvalu-dark-scope{
+  --bg1:#060913;
+  --bg2:#0B1020;
+  --card: rgba(255,255,255,.07);
+  --border: rgba(255,255,255,.12);
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.65);
+  --muted2: rgba(255,255,255,.55);
+}
+
+.truvalu-dark-scope *{ box-sizing:border-box; }
+
+.truvalu-dark-scope.appBg{
+  min-height:100vh;
+  background:
+    radial-gradient(1100px 600px at 22% 10%, rgba(27,42,106,.55) 0%, transparent 60%),
+    radial-gradient(900px 520px at 80% 12%, rgba(106,27,106,.48) 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+  color: var(--text);
+}
+
+.truvalu-dark-scope .container{
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px 16px 42px;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.truvalu-dark-scope .header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.truvalu-dark-scope .brand{ display:flex; align-items:center; gap: 10px; }
+.truvalu-dark-scope .logo{
+  width: 14px; height: 14px; border-radius: 999px;
+  background: linear-gradient(135deg, #6EE7FF, #A78BFA);
+  box-shadow: 0 0 0 6px rgba(110,231,255,.10);
+}
+.truvalu-dark-scope .brandName{ font-weight: 900; letter-spacing: .2px; font-size: 16px; }
+.truvalu-dark-scope .brandSub{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+.truvalu-dark-scope .primaryBtn{
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 900;
+  color: #081018;
+  background: linear-gradient(90deg, #6EE7FF, #A78BFA);
+}
+.truvalu-dark-scope .primaryBtn:disabled{ opacity: .65; cursor: not-allowed; }
+.truvalu-dark-scope .headerBtn{ padding: 10px 12px; }
+
+.truvalu-dark-scope .hero{
+  display:grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+  margin: 14px 0 16px;
+}
+@media (max-width: 980px){ .truvalu-dark-scope .hero{ grid-template-columns: 1fr; } }
+
+.truvalu-dark-scope h1{
+  margin: 0 0 8px;
+  font-size: 42px;
+  line-height: 1.07;
+}
+@media (max-width: 560px){ .truvalu-dark-scope h1{ font-size: 34px; } }
+
+.truvalu-dark-scope .gradText{
+  background: linear-gradient(90deg, #6EE7FF, #A78BFA, #F472B6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.truvalu-dark-scope .subtitle{
+  margin: 8px 0 14px;
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+.truvalu-dark-scope .card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.35);
+}
+
+.truvalu-dark-scope .cardTitle{ font-weight: 900; font-size: 14px; }
+.truvalu-dark-scope .cardHint{ color: var(--muted2); font-size: 12px; margin-top: 4px; }
+
+.truvalu-dark-scope .miniStats{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+@media (max-width: 560px){ .truvalu-dark-scope .miniStats{ grid-template-columns: 1fr; } }
+
+.truvalu-dark-scope .miniStat{
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  padding: 12px;
+}
+.truvalu-dark-scope .miniLabel{ font-size: 12px; color: var(--muted); }
+.truvalu-dark-scope .miniValue{ margin-top: 6px; font-size: 16px; font-weight: 900; }
+
+.truvalu-dark-scope .heroRight .bigNumber{
+  margin-top: 14px;
+  font-size: 34px;
+  font-weight: 1000;
+  letter-spacing: .2px;
+}
+.truvalu-dark-scope .bigHint{ margin-top: 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
+
+.truvalu-dark-scope .summaryRow{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.truvalu-dark-scope .summaryItem{
+  background: rgba(0,0,0,.16);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 14px;
+  padding: 10px;
+}
+.truvalu-dark-scope .summaryLabel{ font-size: 12px; color: var(--muted); }
+.truvalu-dark-scope .summaryValue{ margin-top: 6px; font-weight: 900; }
+
+.truvalu-dark-scope .grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+@media (max-width: 980px){ .truvalu-dark-scope .grid{ grid-template-columns: 1fr; } }
+
+.truvalu-dark-scope .formGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0 12px;
+}
+@media (max-width: 560px){ .truvalu-dark-scope .formGrid{ grid-template-columns: 1fr; } }
+
+.truvalu-dark-scope .sectionLabel{
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  color: rgba(255,255,255,.85);
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  opacity: .9;
+}
+
+.truvalu-dark-scope .field label{
+  display:block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.truvalu-dark-scope .field input, .truvalu-dark-scope .field select{
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.24);
+  color: rgba(255,255,255,.92);
+  outline: none;
+}
+.truvalu-dark-scope .field input:focus, .truvalu-dark-scope .field select:focus{
+  border-color: rgba(110,231,255,.55);
+  box-shadow: 0 0 0 4px rgba(110,231,255,.10);
+}
+
+.truvalu-dark-scope .note{
+  margin-top: 10px;
+  color: var(--muted2);
+  font-size: 12px;
+}
+
+.truvalu-dark-scope .reportGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+@media (max-width: 560px){ .truvalu-dark-scope .reportGrid{ grid-template-columns: 1fr; } }
+
+.truvalu-dark-scope .reportBox{
+  background: rgba(0,0,0,.16);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  padding: 12px;
+}
+.truvalu-dark-scope .reportLabel{ font-size: 12px; color: var(--muted); }
+.truvalu-dark-scope .reportValue{ margin-top: 8px; font-size: 18px; font-weight: 1000; }
+.truvalu-dark-scope .reportSmall{ margin-top: 6px; color: var(--muted2); font-size: 12px; }
+
+.truvalu-dark-scope .divider{
+  height: 1px;
+  background: rgba(255,255,255,.12);
+  margin: 14px 0;
+}
+
+.truvalu-dark-scope .sectionTitle{ font-weight: 1000; margin-top: 2px; }
+.truvalu-dark-scope .sectionSub{ color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+.truvalu-dark-scope .tableWrap{
+  overflow:auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  margin-top: 10px;
+}
+.truvalu-dark-scope table{
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+  background: rgba(0,0,0,.18);
+}
+.truvalu-dark-scope th, .truvalu-dark-scope td{
+  padding: 10px 10px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  text-align: left;
+  font-size: 12px;
+  color: rgba(255,255,255,.82);
+}
+.truvalu-dark-scope th{
+  position: sticky;
+  top: 0;
+  background: rgba(0,0,0,.35);
+  font-weight: 900;
+}
+
+.truvalu-dark-scope .chartBlock{ margin-top: 14px; }
+.truvalu-dark-scope .chartTitle{ font-weight: 1000; }
+.truvalu-dark-scope .chartHint{ color: var(--muted2); font-size: 12px; margin-top: 6px; }
+.truvalu-dark-scope .chartWrap{
+  margin-top: 10px;
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  padding: 10px;
+}
+
+.truvalu-dark-scope .empty{
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px dashed rgba(255,255,255,.18);
+  background: rgba(255,255,255,.04);
+}
+.truvalu-dark-scope .empty.small{ margin-top: 12px; }
+.truvalu-dark-scope .emptyTitle{ font-weight: 1000; }
+.truvalu-dark-scope .emptySub{ color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+.truvalu-dark-scope .errorBox{
+  margin-top: 12px;
+  background: rgba(244,63,94,.12);
+  border: 1px solid rgba(244,63,94,.35);
+  color: rgba(255,255,255,.92);
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+}
+
+.truvalu-dark-scope .footer{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.truvalu-dark-scope .dotSep{ opacity: .6; }
+.truvalu-dark-scope .mutedSmall{ color: var(--muted); font-size: 12px; font-weight: 700; }
+
+.truvalu-dark-scope .heroCard { height: 100%; }
+.truvalu-dark-scope .summaryGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.truvalu-dark-scope .summaryGrid .k{ display:block; color: rgba(255,255,255,.65); font-size: 12px; }
+.truvalu-dark-scope .summaryGrid .v{ display:block; font-weight: 900; margin-top: 6px; }
+
+.truvalu-dark-scope .checkRow{
+  grid-column: 1 / -1;
+  display:flex;
+  flex-wrap:wrap;
+  gap: 10px 14px;
+  margin-top: 6px;
+}
+.truvalu-dark-scope .check{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.20);
+  color: rgba(255,255,255,.85);
+  font-size: 13px;
+}
+.truvalu-dark-scope .check input{ transform: scale(1.1); }

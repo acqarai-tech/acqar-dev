@@ -2,7 +2,7 @@ import { useState,useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { trackEvent } from "../analytics";
 // import { Helmet } from "react-helmet-async";
-import Nav from '../components/NavBar';
+import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 import "../styles/truvalu-dark.css";
 

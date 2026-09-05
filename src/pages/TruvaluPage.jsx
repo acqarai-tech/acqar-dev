@@ -4,6 +4,7 @@ import { trackEvent } from "../analytics";
 // import { Helmet } from "react-helmet-async";
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
+import "../styles/truvalu-dark.css";
 
 import { supabase } from "../lib/supabase"; // make sure this exists
 

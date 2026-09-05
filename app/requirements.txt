@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+joblib
+numpy
+pandas
+requests
+python-dotenv
+supabase
+scikit-learn
+xgboost
+catboost
+google-analytics-data
+google-auth
+google-genai
+openai
+groq
+python-multipart

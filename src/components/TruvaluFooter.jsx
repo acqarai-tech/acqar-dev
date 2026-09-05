@@ -30,23 +30,116 @@ const COLUMNS = [
   },
 ]
 
+const styles = `
+  :root {
+    --tf-line: #e5e7ec;
+    --tf-muted: #6b7280;
+    --tf-accent-dark: #b57a3f;
+    --tf-ink: #0a0a0a;
+  }
+
+  .tf-footer {
+    border-top: 1px solid var(--tf-line);
+    padding: 56px 24px;
+  }
+
+  .tf-grid {
+    margin: 0 auto;
+    display: grid;
+    max-width: 1280px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+  @media (min-width: 640px) {
+    .tf-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .tf-brand-col { grid-column: span 2 / span 2; }
+  @media (min-width: 640px) {
+    .tf-brand-col { grid-column: span 1 / span 1; }
+  }
+
+  .tf-logo { height: 24px; width: auto; display: block; }
+
+  .tf-tagline {
+    margin-top: 12px;
+    max-width: 240px;
+    font-size: 14px;
+    color: var(--tf-muted);
+  }
+
+  .tf-social-row { margin-top: 16px; display: flex; gap: 12px; }
+
+  .tf-social-btn {
+    display: flex;
+    height: 36px; width: 36px;
+    align-items: center; justify-content: center;
+    border-radius: 999px;
+    border: 1px solid var(--tf-line);
+    color: var(--tf-muted);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .tf-social-btn:hover {
+    border-color: rgba(181, 122, 63, 0.4);
+    color: var(--tf-accent-dark);
+  }
+
+  .tf-col-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--tf-muted);
+  }
+
+  .tf-col-list {
+    margin-top: 12px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tf-col-link {
+    cursor: pointer;
+    font-size: 14px;
+    color: rgba(10, 10, 10, 0.7);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .tf-col-link:hover { color: var(--tf-accent-dark); }
+
+  .tf-bottom {
+    margin: 40px auto 0;
+    max-width: 1280px;
+    border-top: 1px solid var(--tf-line);
+    padding-top: 24px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--tf-muted);
+  }
+`;
+
 export default function Footer() {
   return (
-    <footer className="border-t border-line px-6 py-14">
-      <div className="mx-auto grid max-w-[1280px] grid-cols-2 gap-10 sm:grid-cols-4">
-        <div className="col-span-2 sm:col-span-1">
-          <img src={acqarLogo} alt="ACQAR" className="h-6 w-auto" />
-          <p className="mt-3 max-w-[240px] text-sm text-muted">
+    <footer className="tf-footer">
+      <style>{styles}</style>
+
+      <div className="tf-grid">
+        <div className="tf-brand-col">
+          <img src={acqarLogo} alt="ACQAR" className="tf-logo" />
+          <p className="tf-tagline">
             The Real Estate AI Agent in your pocket. Independent, data-backed, and
             always on.
           </p>
-          <div className="mt-4 flex gap-3">
+          <div className="tf-social-row">
             <a
               href="https://www.linkedin.com/company/acqar"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-accent/40 hover:text-accent-dark"
+              className="tf-social-btn"
             >
               <LinkedinLogo weight="fill" size={16} />
             </a>
@@ -55,7 +148,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-accent/40 hover:text-accent-dark"
+              className="tf-social-btn"
             >
               <InstagramLogo weight="fill" size={16} />
             </a>
@@ -64,13 +157,11 @@ export default function Footer() {
 
         {COLUMNS.map((col) => (
           <div key={col.title}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
-              {col.title}
-            </p>
-            <ul className="mt-3 space-y-2">
+            <p className="tf-col-title">{col.title}</p>
+            <ul className="tf-col-list">
               {col.links.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="cursor-pointer text-sm text-ink/70 transition-colors hover:text-accent-dark">
+                  <a href={link.href} className="tf-col-link">
                     {link.label}
                   </a>
                 </li>
@@ -80,7 +171,7 @@ export default function Footer() {
         ))}
       </div>
 
-      <div className="mx-auto mt-10 max-w-[1280px] border-t border-line pt-6 text-center text-xs text-muted">
+      <div className="tf-bottom">
         © 2026 ACQARLABS L.L.C-FZ. All rights reserved.
       </div>
     </footer>

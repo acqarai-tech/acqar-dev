@@ -1,178 +1,200 @@
-import { useEffect, useState } from 'react'
-import acqarLogo from '../assets/acqar-logo.webp'
+import React, { useEffect, useState } from "react";
 
-const COLUMNS = [
-  {
-    title: 'Product',
-    links: [
-      { label: 'ACQAR TruValu™', href: '/truvalu' },
-      { label: 'Pricing', href: '#for-brokers' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About ACQAR', href: 'https://www.acqar.com/' },
-      { label: 'Contact Us', href: '#' },
-      { label: 'Brokers', href: '#for-brokers' },
-    ],
-  },
-  {
-    title: 'Legal & Info',
-    links: [
-      { label: 'Intelligence Blog', href: '#' },
-      { label: 'Terms of Use', href: '#' },
-      { label: 'Privacy Policy', href: '#' },
-    ],
-  },
-]
-
-export default function Footer() {
+const TruvaluFooter = () => {
   const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth < 640 : false
-  )
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
+  );
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 640)
-    }
+      setIsMobile(window.innerWidth < 768);
+    };
 
-    handleResize()
-
-    window.addEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
-  const footerStyle = {
-    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-    padding: isMobile ? '48px 24px' : '56px 24px',
-    width: '100%',
-    boxSizing: 'border-box',
-  }
+  const styles = {
+    footer: {
+      background: "#111111",
+      color: "#ffffff",
+      padding: isMobile ? "40px 20px 24px" : "60px 40px 30px",
+      width: "100%",
+    },
 
-  const containerStyle = {
-    maxWidth: '1280px',
-    margin: '0 auto',
-    display: 'grid',
-    gridTemplateColumns: isMobile
-      ? 'repeat(2, minmax(0, 1fr))'
-      : 'repeat(4, minmax(0, 1fr))',
-    gap: isMobile ? '40px' : '40px',
-    width: '100%',
-    boxSizing: 'border-box',
-  }
+    container: {
+      maxWidth: "1200px",
+      margin: "0 auto",
+    },
 
-  const logoColumnStyle = {
-    gridColumn: isMobile ? 'span 2' : 'span 1',
-  }
+    grid: {
+      display: "grid",
+      gridTemplateColumns: isMobile
+        ? "1fr"
+        : "2fr 1fr 1fr 1fr",
+      gap: isMobile ? "35px" : "50px",
+    },
 
-  const logoStyle = {
-    height: '24px',
-    width: 'auto',
-    display: 'block',
-  }
+    brand: {
+      maxWidth: "350px",
+    },
 
-  const descriptionStyle = {
-    margin: '12px 0 0',
-    maxWidth: '240px',
-    fontSize: '14px',
-    lineHeight: '1.5',
-    color: 'var(--muted, #777)',
-  }
+    logo: {
+      width: "150px",
+      height: "auto",
+      marginBottom: "18px",
+    },
 
-  const columnTitleStyle = {
-    margin: 0,
-    fontSize: '11px',
-    fontWeight: 600,
-    lineHeight: 1.4,
-    letterSpacing: '0.14em',
-    textTransform: 'uppercase',
-    color: 'var(--muted, #777)',
-  }
+    description: {
+      color: "#b5b5b5",
+      fontSize: "14px",
+      lineHeight: "1.7",
+      margin: 0,
+    },
 
-  const listStyle = {
-    margin: '12px 0 0',
-    padding: 0,
-    listStyle: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-  }
+    heading: {
+      fontSize: "14px",
+      fontWeight: "700",
+      marginBottom: "18px",
+      textTransform: "uppercase",
+      letterSpacing: "0.05em",
+    },
 
-  const copyrightContainerStyle = {
-    maxWidth: '1280px',
-    margin: '40px auto 0',
-    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-    paddingTop: '24px',
-    textAlign: 'center',
-    fontSize: '12px',
-    lineHeight: 1.5,
-    color: 'var(--muted, #777)',
-  }
+    link: {
+      display: "block",
+      color: "#b5b5b5",
+      textDecoration: "none",
+      fontSize: "14px",
+      marginBottom: "12px",
+    },
+
+    bottom: {
+      marginTop: isMobile ? "35px" : "55px",
+      paddingTop: "20px",
+      borderTop: "1px solid #333333",
+      display: "flex",
+      flexDirection: isMobile ? "column" : "row",
+      justifyContent: "space-between",
+      alignItems: isMobile ? "flex-start" : "center",
+      gap: "15px",
+    },
+
+    copyright: {
+      color: "#888888",
+      fontSize: "13px",
+    },
+
+    social: {
+      display: "flex",
+      gap: "15px",
+    },
+
+    socialLink: {
+      color: "#b5b5b5",
+      textDecoration: "none",
+      fontSize: "13px",
+    },
+  };
 
   return (
-    <footer style={footerStyle}>
-      <div style={containerStyle}>
-        {/* Logo and description */}
-        <div style={logoColumnStyle}>
-          <img
-            src={acqarLogo}
-            alt="ACQAR"
-            style={logoStyle}
-          />
+    <footer style={styles.footer}>
+      <div style={styles.container}>
 
-          <p style={descriptionStyle}>
-            The Real Estate AI Agent in your pocket.
-            Independent, data-backed, and always on.
-          </p>
+        <div style={styles.grid}>
+
+          {/* Brand */}
+          <div style={styles.brand}>
+            <img
+              src="/logo.png"
+              alt="Acqar"
+              style={styles.logo}
+            />
+
+            <p style={styles.description}>
+              AI-powered real estate valuation and property intelligence
+              platform helping users make smarter property decisions.
+            </p>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h3 style={styles.heading}>Company</h3>
+
+            <a href="/" style={styles.link}>
+              Home
+            </a>
+
+            <a href="/about" style={styles.link}>
+              About
+            </a>
+
+            <a href="/pricing" style={styles.link}>
+              Pricing
+            </a>
+
+            <a href="/contact" style={styles.link}>
+              Contact
+            </a>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h3 style={styles.heading}>Resources</h3>
+
+            <a href="/blogs" style={styles.link}>
+              Blogs
+            </a>
+
+            <a href="/valuation" style={styles.link}>
+              Property Valuation
+            </a>
+
+            <a href="/faq" style={styles.link}>
+              FAQ
+            </a>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 style={styles.heading}>Legal</h3>
+
+            <a href="/privacy-policy" style={styles.link}>
+              Privacy Policy
+            </a>
+
+            <a href="/terms" style={styles.link}>
+              Terms & Conditions
+            </a>
+          </div>
+
         </div>
 
-        {/* Footer columns */}
-        {COLUMNS.map((column) => (
-          <div key={column.title}>
-            <p style={columnTitleStyle}>
-              {column.title}
-            </p>
-
-            <ul style={listStyle}>
-              {column.links.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    style={{
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      lineHeight: '1.5',
-                      color: 'rgba(20, 20, 20, 0.7)',
-                      textDecoration: 'none',
-                      transition: 'color 200ms ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color =
-                        'var(--accent-dark, #9a6b3f)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color =
-                        'rgba(20, 20, 20, 0.7)'
-                    }}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+        <div style={styles.bottom}>
+          <div style={styles.copyright}>
+            © {new Date().getFullYear()} Acqar. All rights reserved.
           </div>
-        ))}
-      </div>
 
-      {/* Copyright */}
-      <div style={copyrightContainerStyle}>
-        © 2026 ACQARLABS L.L.C-FZ. All rights reserved.
+          <div style={styles.social}>
+            <a href="#" style={styles.socialLink}>
+              LinkedIn
+            </a>
+
+            <a href="#" style={styles.socialLink}>
+              Instagram
+            </a>
+
+            <a href="#" style={styles.socialLink}>
+              Facebook
+            </a>
+          </div>
+        </div>
+
       </div>
     </footer>
-  )
-}
-```
+  );
+};
+
+export default TruvaluFooter;

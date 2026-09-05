@@ -21,6 +21,7 @@ import LoginPage from './pages/LoginPage';
 import Registration from './pages/Registration';
 import ValuationForm from './pages/ValuationForm';   
 import Report from './pages/Report'; 
+import LandingPage from "./pages/LandingPage";
 
 
 function LandingPage() {
@@ -46,6 +47,7 @@ function LandingPage() {
 function App() {
   return (
     <Routes>
+      <Route path="/truvalu" element={<LandingPage />} />
       <Route path="/" element={<LandingPage />} />
       <Route path="/chat" element={<ChatPage />} />
       <Route path="/valuations" element={<PropertyValuations />} />
@@ -53,9 +55,22 @@ function App() {
       <Route path="/areas/:slug" element={<AreaDetailPage />} />
        <Route path="/loginpage" element={<LoginPage />} />
       <Route path="/register" element={<Registration />} />
-      <Route path="/valuation" element={<ValuationForm />} />
-<Route path="/report" element={<Report />} />
-<Route path="/report/check/:id" element={<Report />} />
+
+       <Route
+          path="/valuation"
+          element={
+            <ValuationForm
+              formData={valuationDraft} // ✅ UI-only (starts blank)
+              setFormData={setFormData} // ✅ clears UI when set to null
+              setReportData={setReportData}
+            />
+          }
+        />
+
+      
+<Route path="/report" element={<Report reportData={reportData} />} />
+        <Route path="/report/check/:id" element={<Report />} />
+
     </Routes>
   )
 }

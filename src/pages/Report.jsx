@@ -26,7 +26,7 @@ import {
   ReferenceLine,
 } from "recharts";
 
-const RAW_API = process.env.REACT_APP_AVM_API;
+const RAW_API = import.meta.env.VITE_AVM_API;
 const API = RAW_API ? RAW_API.replace(/\/+$/, "") : "";
 
 const LS_FORM_KEY = "truvalu_formData_v1";
@@ -748,7 +748,7 @@ useEffect(() => {
       }
     }
 
-    if (!API) throw new Error("REACT_APP_AVM_API is missing.");
+    if (!API) throw new Error("VITE_AVM_API is missing.");
         if (!formData || Object.keys(formData).length === 0) return;
 if (!valuationId && (!formData || Object.keys(formData).length === 0)) throw new Error("No form data found for this report.");
 if (valuationId && incrementedRef.current) return;
@@ -892,7 +892,7 @@ else {
     // UI stays unlocked since payment succeeded — user can use the report.
     // But on next page load it will re-lock since DB wasn't updated.
     // Show a visible alert so you know this happened during testing:
-    if (process.env.NODE_ENV === "development") {
+    if (import.meta.env.DEV) {
       alert(`DEV: Plan update failed!\n\nCode: ${updateErr.code}\nMessage: ${updateErr.message}\nDetails: ${updateErr.details}\n\nCheck Supabase RLS policies on the users table.`);
     }
     return;

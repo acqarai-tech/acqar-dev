@@ -8,7 +8,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { supabase } from "../lib/supabase";
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 // ── Inner checkout form ──────────────────────────────────────────────────────
 function CheckoutForm({ onSuccess, onError, userDetails, isLoggedIn, paymentIntentId, setClientSecret, setPaymentIntentId, valuationId, termsAccepted, setTermsAccepted, existingUserId }) {
@@ -219,12 +219,12 @@ await supabase.from("users").update({
 
 
 await fetch(
-  `${process.env.REACT_APP_SUPABASE_URL}/functions/v1/send-payment-confirmation`,
+  `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-payment-confirmation`,
   {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+      "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
     },
     body: JSON.stringify({
       name: userDetails.name.trim(),
@@ -250,12 +250,12 @@ return;
 if (userDetails.email) {
   try {
     await fetch(
-      `${process.env.REACT_APP_SUPABASE_URL}/functions/v1/update-payment-email`,
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-payment-email`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           email: userDetails.email.trim(),
@@ -336,14 +336,14 @@ if (paymentError) {
      const { data: { session } } = await supabase.auth.getSession();
 
   await fetch(
-    `${process.env.REACT_APP_SUPABASE_URL}/functions/v1/save-payment-details`,
+    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/save-payment-details`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": session
           ? `Bearer ${session.access_token}`
-          : `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+          : `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
       },
       body: JSON.stringify({
         paymentIntentId: paymentIntent.id,
@@ -391,12 +391,12 @@ await supabase.from("users").update({
 }).eq("id", userId);
 
 await fetch(
-  `${process.env.REACT_APP_SUPABASE_URL}/functions/v1/send-payment-confirmation`,
+  `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-payment-confirmation`,
   {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+      "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
     },
     body: JSON.stringify({
       name: userDetails.name.trim(),
@@ -739,7 +739,7 @@ const [existingUserId, setExistingUserId] = useState(null);
         setIsLoggedIn(true);
         setLoadingSecret(true);
         fetch(
-          `${process.env.REACT_APP_SUPABASE_URL}/functions/v1/create-payment-intent`,
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-payment-intent`,
           {
             method: "POST",
             headers: {
@@ -1015,13 +1015,13 @@ const [existingUserId, setExistingUserId] = useState(null);
       setExistingUserId(existingUser.id);
     }
 
-    const res = await fetch(
-      `${process.env.REACT_APP_SUPABASE_URL}/functions/v1/create-payment-intent`,
+       const res = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-payment-intent`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           valuationId: valuationId || null,

@@ -4,7 +4,7 @@ import NavBar from "../components/NavBar";
 import { supabase } from "../lib/supabase";
 import PaywallModal from "../components/PaywallModal";
 import { trackEvent } from "../analytics";
-import { Helmet } from "react-helmet-async";
+// import { Helmet } from "react-helmet-async";
 
 const RAW_API = process.env.REACT_APP_AVM_API;
 const API = RAW_API ? RAW_API.replace(/\/+$/, "") : "";

@@ -21,7 +21,7 @@ import LoginPage from './pages/LoginPage';
 import Registration from './pages/Registration';
 import ValuationForm from './pages/ValuationForm';   
 import Report from './pages/Report'; 
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "./pages/TruvaluPage";
 
 
 function LandingPage() {
@@ -47,7 +47,7 @@ function LandingPage() {
 function App() {
   return (
     <Routes>
-      <Route path="/truvalu" element={<LandingPage />} />
+      <Route path="/truvalu" element={<TruvaluPage />} />
       <Route path="/" element={<LandingPage />} />
       <Route path="/chat" element={<ChatPage />} />
       <Route path="/valuations" element={<PropertyValuations />} />

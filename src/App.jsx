@@ -93,7 +93,7 @@
 
 
 import { Routes, Route } from 'react-router-dom'
-import { useState, useEffect } from 'react'   // ← ADD useState, useEffect
+import { useState, useEffect } from 'react'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import ProductShowcase from './components/ProductShowcase'
@@ -113,10 +113,10 @@ import AreasListPage from './components/areas/AreasListPage'
 import AreaDetailPage from './components/areas/AreaDetailPage'
 import LoginPage from './pages/LoginPage';
 import Registration from './pages/Registration';
-import ValuationForm from './pages/ValuationForm';   // ← ADD
-import Report from './pages/Report';                   // ← ADD
+import ValuationForm from './pages/ValuationForm';
+import Report from './pages/Report';
+import TruvaluPage from './pages/TruvaluPage';   // ← ADD THIS
 
-// ← ADD these constants (copied from the reference App.js)
 const LS_FORM_KEY = "truvalu_formData_v1";
 const LS_REPORT_KEY = "truvalu_reportData_v1";
 
@@ -149,15 +149,12 @@ function LandingPage() {
 }
 
 function App() {
-  // ← ADD all of this state block (copied logic from reference App.js)
   const [persistedForm, setPersistedForm] = useState(() =>
     safeParse(localStorage.getItem(LS_FORM_KEY))
   );
-
   const [reportData, setReportData] = useState(() =>
     safeParse(localStorage.getItem(LS_REPORT_KEY))
   );
-
   const [valuationDraft, setValuationDraft] = useState(null);
 
   useEffect(() => {
@@ -190,8 +187,8 @@ function App() {
       <Route path="/areas/:slug" element={<AreaDetailPage />} />
       <Route path="/loginpage" element={<LoginPage />} />
       <Route path="/register" element={<Registration />} />
+      <Route path="/truvalu" element={<TruvaluPage />} />   {/* ← ADD THIS */}
 
-      {/* ← ADD these two routes */}
       <Route
         path="/valuation"
         element={

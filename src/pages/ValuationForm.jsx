@@ -7,7 +7,7 @@ import { trackEvent } from "../analytics";
 // import { Helmet } from "react-helmet-async";
 import "../styles/truvalu-dark.css";
 
-const RAW_API = process.env.REACT_APP_AVM_API;
+const RAW_API = import.meta.env.VITE_AVM_API;
 const API = RAW_API ? RAW_API.replace(/\/+$/, "") : "";
 
 console.log("RAW_API:", RAW_API);

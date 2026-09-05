@@ -1074,7 +1074,7 @@ function Hero() {
   borderRadius: "24px"
 }}>
   <img
-    src="/hero.png"
+    src="/hero.webp"
     alt="Property"
     style={{
       width: "110%",
@@ -1098,7 +1098,7 @@ function Hero() {
   borderRadius: "24px"
 }}>
   <img
-    src="/hero.png"
+    src="/hero.webp"
     alt="Property"
     style={{
       width: "110%",
@@ -1135,7 +1135,7 @@ filter: "drop-shadow(0px 0px 24px rgba(184,115,51,0.35))"
   }}
 >
   <img
-    src="/hero.png"
+    src="/hero.webp"
     alt="Property"
     style={{
       width: "110%",

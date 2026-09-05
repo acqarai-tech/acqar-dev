@@ -17,8 +17,8 @@ import Footer from './Footer'
 import MobileTabBar from './MobileTabBar'
 import FloatingAdvisorButton from './FloatingAdvisorButton'
 
-const NEW_VALUATION_URL = 'https://www.acqar.com/valuation'
-const REPORT_URL_BASE = 'https://www.acqar.com/report'
+const NEW_VALUATION_URL = '/valuation'
+const REPORT_URL_BASE = '/report'
 
 const FILTERS = [
   { key: 'all', label: 'All' },

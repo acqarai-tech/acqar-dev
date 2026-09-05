@@ -1,13 +1,11 @@
+```jsx
 import acqarLogo from '../assets/acqar-logo.webp'
-import { LinkedinLogo, InstagramLogo } from '@phosphor-icons/react'
 
 const COLUMNS = [
   {
     title: 'Product',
     links: [
-      { label: 'ACQAR TruValu™', href: 'https://www.acqar.com/truvalu' },
-      { label: 'ACQAR Signal™', href: 'https://www.acqar.com/signal' },
-      { label: 'ACQAR Passport™', href: '#' },
+      { label: 'ACQAR TruValu™', href: '/truvalu' },
       { label: 'Pricing', href: '#for-brokers' },
     ],
   },
@@ -17,7 +15,6 @@ const COLUMNS = [
       { label: 'About ACQAR', href: 'https://www.acqar.com/' },
       { label: 'Contact Us', href: '#' },
       { label: 'Brokers', href: '#for-brokers' },
-      { label: 'Resources', href: 'https://www.acqar.com/blogs' },
     ],
   },
   {
@@ -30,138 +27,120 @@ const COLUMNS = [
   },
 ]
 
-const styles = `
-  :root {
-    --tf-line: #e5e7ec;
-    --tf-muted: #6b7280;
-    --tf-accent-dark: #b57a3f;
-    --tf-ink: #0a0a0a;
-  }
-
-  .tf-footer {
-    border-top: 1px solid var(--tf-line);
-    padding: 56px 24px;
-  }
-
-  .tf-grid {
-    margin: 0 auto;
-    display: grid;
-    max-width: 1280px;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
-  }
-  @media (min-width: 640px) {
-    .tf-grid { grid-template-columns: repeat(4, 1fr); }
-  }
-
-  .tf-brand-col { grid-column: span 2 / span 2; }
-  @media (min-width: 640px) {
-    .tf-brand-col { grid-column: span 1 / span 1; }
-  }
-
-  .tf-logo { height: 24px; width: auto; display: block; }
-
-  .tf-tagline {
-    margin-top: 12px;
-    max-width: 240px;
-    font-size: 14px;
-    color: var(--tf-muted);
-  }
-
-  .tf-social-row { margin-top: 16px; display: flex; gap: 12px; }
-
-  .tf-social-btn {
-    display: flex;
-    height: 36px; width: 36px;
-    align-items: center; justify-content: center;
-    border-radius: 999px;
-    border: 1px solid var(--tf-line);
-    color: var(--tf-muted);
-    text-decoration: none;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .tf-social-btn:hover {
-    border-color: rgba(181, 122, 63, 0.4);
-    color: var(--tf-accent-dark);
-  }
-
-  .tf-col-title {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--tf-muted);
-  }
-
-  .tf-col-list {
-    margin-top: 12px;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .tf-col-link {
-    cursor: pointer;
-    font-size: 14px;
-    color: rgba(10, 10, 10, 0.7);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .tf-col-link:hover { color: var(--tf-accent-dark); }
-
-  .tf-bottom {
-    margin: 40px auto 0;
-    max-width: 1280px;
-    border-top: 1px solid var(--tf-line);
-    padding-top: 24px;
-    text-align: center;
-    font-size: 12px;
-    color: var(--tf-muted);
-  }
-`;
-
 export default function Footer() {
-  return (
-    <footer className="tf-footer">
-      <style>{styles}</style>
+  const footerStyle = {
+    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+    padding: '56px 24px',
+  }
 
-      <div className="tf-grid">
-        <div className="tf-brand-col">
-          <img src={acqarLogo} alt="ACQAR" className="tf-logo" />
-          <p className="tf-tagline">
-            The Real Estate AI Agent in your pocket. Independent, data-backed, and
-            always on.
+  const containerStyle = {
+    maxWidth: '1280px',
+    margin: '0 auto',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+    gap: '40px',
+  }
+
+  const logoColumnStyle = {
+    gridColumn: 'span 1',
+  }
+
+  const logoStyle = {
+    height: '24px',
+    width: 'auto',
+    display: 'block',
+  }
+
+  const descriptionStyle = {
+    marginTop: '12px',
+    maxWidth: '240px',
+    fontSize: '14px',
+    lineHeight: '1.5',
+    color: 'var(--muted, #777)',
+  }
+
+  const columnTitleStyle = {
+    margin: 0,
+    fontSize: '11px',
+    fontWeight: 600,
+    lineHeight: 1.4,
+    letterSpacing: '0.14em',
+    textTransform: 'uppercase',
+    color: 'var(--muted, #777)',
+  }
+
+  const listStyle = {
+    margin: '12px 0 0',
+    padding: 0,
+    listStyle: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+  }
+
+  const linkStyle = {
+    cursor: 'pointer',
+    fontSize: '14px',
+    lineHeight: '1.5',
+    color: 'rgba(20, 20, 20, 0.7)',
+    textDecoration: 'none',
+    transition: 'color 200ms ease',
+  }
+
+  const copyrightContainerStyle = {
+    maxWidth: '1280px',
+    margin: '40px auto 0',
+    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+    paddingTop: '24px',
+    textAlign: 'center',
+    fontSize: '12px',
+    lineHeight: 1.5,
+    color: 'var(--muted, #777)',
+  }
+
+  return (
+    <footer style={footerStyle}>
+      <div
+        className="footer-grid"
+        style={containerStyle}
+      >
+        <div
+          className="footer-logo-column"
+          style={logoColumnStyle}
+        >
+          <img
+            src={acqarLogo}
+            alt="ACQAR"
+            style={logoStyle}
+          />
+
+          <p style={descriptionStyle}>
+            The Real Estate AI Agent in your pocket. Independent,
+            data-backed, and always on.
           </p>
-          <div className="tf-social-row">
-            <a
-              href="https://www.linkedin.com/company/acqar"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              className="tf-social-btn"
-            >
-              <LinkedinLogo weight="fill" size={16} />
-            </a>
-            <a
-              href="https://www.instagram.com/acqar.dxb/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="tf-social-btn"
-            >
-              <InstagramLogo weight="fill" size={16} />
-            </a>
-          </div>
         </div>
 
-        {COLUMNS.map((col) => (
-          <div key={col.title}>
-            <p className="tf-col-title">{col.title}</p>
-            <ul className="tf-col-list">
-              {col.links.map((link) => (
+        {COLUMNS.map((column) => (
+          <div key={column.title}>
+            <p style={columnTitleStyle}>
+              {column.title}
+            </p>
+
+            <ul style={listStyle}>
+              {column.links.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="tf-col-link">
+                  <a
+                    href={link.href}
+                    style={linkStyle}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color =
+                        'var(--accent-dark, #9a6b3f)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color =
+                        'rgba(20, 20, 20, 0.7)'
+                    }}
+                  >
                     {link.label}
                   </a>
                 </li>
@@ -171,9 +150,35 @@ export default function Footer() {
         ))}
       </div>
 
-      <div className="tf-bottom">
+      <div style={copyrightContainerStyle}>
         © 2026 ACQARLABS L.L.C-FZ. All rights reserved.
       </div>
+
+      <style>
+        {`
+          .footer-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+          }
+
+          @media (max-width: 639px) {
+            .footer-grid {
+              grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+              gap: 40px;
+            }
+
+            .footer-logo-column {
+              grid-column: span 2 !important;
+            }
+          }
+
+          @media (min-width: 640px) {
+            .footer-logo-column {
+              grid-column: span 1 !important;
+            }
+          }
+        `}
+      </style>
     </footer>
   )
 }
+```

@@ -81,6 +81,7 @@ else:
         "https://acqar.com",
         "https://www.acqar.com",
         "https://beta.acqar.com",
+       "https://acqar-dev.vercel.app",
     ]
 
 app.add_middleware(

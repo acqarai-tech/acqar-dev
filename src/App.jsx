@@ -21,7 +21,7 @@ import LoginPage from './pages/LoginPage';
 import Registration from './pages/Registration';
 import ValuationForm from './pages/ValuationForm';   
 import Report from './pages/Report'; 
-import LandingPage from "./pages/TruvaluPage";
+import TruvaluPage from "./pages/TruvaluPage";
 
 
 function LandingPage() {

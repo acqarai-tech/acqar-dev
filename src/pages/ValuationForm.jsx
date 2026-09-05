@@ -13,7 +13,7 @@ const API = RAW_API ? RAW_API.replace(/\/+$/, "") : "";
 console.log("RAW_API:", RAW_API);
 console.log("API:", API);
 
-/* ✅ ADDED: Fonts + Material Symbols for this screen */
+/* ✅ Fonts + Material Symbols + ALL component CSS (no Tailwind) */
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
@@ -24,9 +24,13 @@ const styles = `
   :root {
     --primary: #2B2B2B;
     --accent-copper: #B87333;
+    --accent: #B8763C;
+    --accent-2: #C98945;
     --gray-light: #D4D4D4;
     --gray-medium: #B3B3B3;
     --bg-off-white: #FAFAFA;
+    --border: #e5e7eb;
+    --text-muted: #6b7280;
   }
 
   .mat-icon {
@@ -50,94 +54,274 @@ const styles = `
   .mat-icon.xs { font-size: 0.75rem; }
   .mat-icon.lg { font-size: 1.5rem; }
 
-  .container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
-  .container-sm { max-width: 64rem; margin: 0 auto; padding: 0 1.5rem; }
-
-  /* ---------- Responsive helpers ---------- */
-  .hide-desktop { display: none; }
-  .stack { display: flex; gap: 12px; align-items: center; }
-  .no-wrap { white-space: nowrap; }
-
-  /* Make sticky header usable on small screens */
-  @media (max-width: 1024px) {
-    .container { padding: 0 1rem; }
-    .container-sm { padding: 0 1rem; }
-  }
-  @media (max-width: 900px) {
-    .hide-mobile { display: none !important; }
-    .hide-desktop { display: inline-flex; }
-  }
-
-  /* ---------- Pricing cards grid ---------- */
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1.1fr 1fr;
-    gap: 16px;
-    align-items: start;
-  }
-  @media (max-width: 1200px) {
-    .pricing-grid { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 640px) {
-    .pricing-grid { grid-template-columns: 1fr; }
-  }
-
-  /* ---------- Compare table responsiveness ---------- */
-  .compare-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .compare-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1.1fr 1fr;
-    min-width: 820px; /* keeps layout intact; scroll on small screens */
-  }
-  @media (max-width: 640px) {
-    .compare-grid { min-width: 760px; }
-  }
-
-  /* ---------- Savings section layout ---------- */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  @media (max-width: 900px) {
-    .two-col { grid-template-columns: 1fr; }
-  }
-
-  /* ---------- Footer grid ---------- */
-  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
-  @media (max-width: 900px) {
-    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
-  }
-  @media (max-width: 520px) {
-    .footer-grid { grid-template-columns: 1fr; }
-  }
-
-  /* ---------- Range ---------- */
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 4px;
-    border-radius: 2px;
-    background: var(--gray-light);
-    outline: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--accent-copper);
-    cursor: pointer;
-    border: 3px solid #fff;
-    box-shadow: 0 2px 8px rgba(184,115,51,0.4);
-  }
-
-  /* ---------- Small-screen typography tweaks (keeps your design, just prevents overflow) ---------- */
-  @media (max-width: 520px) {
-    .hero-sub { padding: 0 8px; }
-  }
-
   /* MOBILE ONLY: stop Safari zoom when keyboard opens */
   @media (max-width: 640px) {
-    input, select, textarea {
-      font-size: 16px !important;
-    }
+    input, select, textarea { font-size: 16px !important; }
+  }
+
+  /* ========================= PAGE ========================= */
+  .vf-page { background: #F8F8F8; color: #111827; font-family: 'Inter', sans-serif; min-height: 100vh; }
+  .vf-main { padding-bottom: 48px; }
+  @media (min-width: 640px) { .vf-main { padding-bottom: 64px; } }
+  @media (min-width: 768px) { .vf-main { padding-bottom: 80px; } }
+
+  .vf-container { max-width: 56rem; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 640px) { .vf-container { padding: 0 24px; } }
+
+  /* ========================= HERO ========================= */
+  .vf-hero { text-align: center; margin-bottom: 24px; }
+  @media (min-width: 640px) { .vf-hero { margin-bottom: 32px; } }
+
+  .vf-hero-title { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
+  @media (min-width: 640px) { .vf-hero-title { font-size: 30px; margin-bottom: 12px; } }
+  @media (min-width: 768px) { .vf-hero-title { font-size: 36px; } }
+
+  .vf-hero-sub { color: #6b7280; font-size: 12px; }
+  @media (min-width: 640px) { .vf-hero-sub { font-size: 14px; } }
+
+  .vf-hero-break { display: none; }
+  @media (min-width: 640px) { .vf-hero-break { display: block; } }
+
+  /* ========================= PROGRESS ========================= */
+  .vf-progress-wrap { margin-bottom: 24px; }
+  @media (min-width: 640px) { .vf-progress-wrap { margin-bottom: 32px; } }
+
+  .vf-progress-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .vf-progress-track { height: 2px; flex: 1; background: #e5e7eb; position: relative; }
+  .vf-progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 50%; background: var(--accent); }
+  .vf-progress-labels { display: flex; justify-content: space-between; font-size: 12px; }
+  .vf-progress-caption { color: #9ca3af; }
+  .vf-progress-step { font-size: 14px; font-weight: 700; }
+
+  /* ========================= CARD ========================= */
+  .vf-card { background: #fff; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid var(--border); overflow: hidden; }
+  .vf-card-body { padding: 16px; display: flex; flex-direction: column; gap: 32px; }
+  @media (min-width: 640px) { .vf-card-body { padding: 24px; } }
+  @media (min-width: 768px) { .vf-card-body { padding: 32px; } }
+
+  .vf-error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 8px; padding: 12px 16px; font-size: 14px; font-weight: 600; }
+
+  /* ========================= SECTIONS ========================= */
+  .vf-section { display: flex; flex-direction: column; gap: 16px; }
+  .vf-section-bordered { padding-top: 16px; border-top: 1px solid #f3f4f6; }
+  .vf-section-title { font-size: 14px; font-weight: 700; letter-spacing: 0.05em; }
+
+  /* ========================= GRIDS ========================= */
+  .vf-grid-1 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .vf-grid-2 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .vf-grid-3 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .vf-grid-4 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 768px) {
+    .vf-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .vf-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .vf-grid-4 { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* ========================= FIELDS ========================= */
+  .vf-rel { position: relative; }
+  .vf-label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block; }
+
+  .vf-input, .vf-select {
+    width: 100%; height: 44px; background: #fff;
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 0 12px; font-size: 14px; color: #111827;
+  }
+  .vf-input:focus, .vf-select:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .vf-select:disabled, .vf-input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .vf-input-plain {
+    width: 100%; height: 48px; background: #fff;
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 0 12px; font-size: 14px; color: #111827;
+  }
+  .vf-input-plain::placeholder { color: #9ca3af; }
+  .vf-input-plain:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(184,118,60,0.3); }
+
+  /* ========================= DROPDOWN ========================= */
+  .vf-dropdown {
+    position: absolute; left: 0; right: 0; top: 100%; margin-top: 8px; z-index: 50;
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  .vf-dropdown-search-wrap { padding: 12px; border-bottom: 1px solid #f3f4f6; background: #fff; position: sticky; top: 0; z-index: 10; }
+  .vf-dropdown-search {
+    width: 100%; height: 40px; padding: 0 12px; background: #f9fafb;
+    border: 1px solid var(--border); border-radius: 8px; font-size: 14px;
+  }
+  .vf-dropdown-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .vf-dropdown-search-sm { height: 36px; border-radius: 6px; }
+
+  .vf-dropdown-list { max-height: 256px; overflow: auto; overscroll-behavior: contain; }
+  .vf-dropdown-list-tall { max-height: 60vh; }
+  @media (min-width: 640px) { .vf-dropdown-list-tall { max-height: 240px; } }
+
+  .vf-dropdown-empty { padding: 12px 16px; font-size: 14px; color: #6b7280; }
+
+  .vf-option { width: 100%; text-align: left; padding: 12px 16px; font-size: 14px; background: none; border: none; cursor: pointer; color: inherit; }
+  .vf-option:hover { background: #f9fafb; }
+  .vf-option:active { background: #f3f4f6; }
+  @media (min-width: 640px) { .vf-option-tight { padding: 10px 16px; } }
+
+  .vf-dropdown-close-wrap { border-top: 1px solid #f3f4f6; padding: 8px; background: #fff; }
+  @media (min-width: 640px) { .vf-dropdown-close-wrap { display: none; } }
+  .vf-dropdown-close {
+    width: 100%; height: 40px; border-radius: 8px; border: 1px solid var(--border);
+    font-size: 14px; font-weight: 600; color: #374151; background: #fff;
+  }
+  .vf-dropdown-close:active { background: #f9fafb; }
+
+  /* ========================= TOGGLE / RADIO ========================= */
+  .vf-toggle-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .vf-toggle-row-lg { display: flex; flex-wrap: wrap; gap: 12px; }
+  .vf-toggle-row-sm { display: flex; gap: 12px; }
+
+  .vf-toggle {
+    flex: 1; min-width: 120px; text-align: center; cursor: pointer; user-select: none;
+    padding: 10px 16px; font-size: 12px; font-weight: 600;
+    border-radius: 6px; border: 1px solid var(--border); background: #fff; color: #4b5563;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+  .vf-toggle:hover { border-color: #d1d5db; }
+  .vf-toggle.is-active { border-color: #000; background: #000; color: #fff; }
+  @media (min-width: 640px) { .vf-toggle { min-width: 0; } }
+
+  .vf-radio-label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .vf-radio-input { width: 16px; height: 16px; accent-color: var(--accent); }
+  .vf-radio-text { font-size: 14px; }
+
+  /* ========================= SIZE / RENOVATION PICKER ========================= */
+  .vf-size-row { position: relative; display: flex; }
+  .vf-size-input-col { position: relative; width: 100%; }
+  .vf-size-input {
+    width: 100%; height: 44px; background: #fff;
+    border: 1px solid var(--border); border-radius: 6px 0 0 6px;
+    padding: 0 36px 0 12px; font-size: 14px; text-align: left;
+  }
+  .vf-size-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+  .vf-size-arrow {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    color: #9ca3af; background: none; border: none; cursor: pointer;
+  }
+  .vf-size-arrow:hover { color: #4b5563; }
+
+  .vf-size-unit-select {
+    height: 44px; background: #f9fafb; border: 1px solid var(--border); border-left: none;
+    border-radius: 0 6px 6px 0; padding: 0 8px; font-size: 12px;
+  }
+  .vf-size-unit-select:focus { outline: none; }
+
+  .vf-size-unit-tag { font-size: 10px; color: var(--accent); margin-left: 4px; }
+
+  /* ========================= AMENITIES ========================= */
+  .vf-amenity-search-wrap { position: relative; }
+  .vf-amenity-search {
+    width: 100%; height: 44px; background: #fff; border: 1px solid var(--border);
+    border-radius: 6px; padding: 0 40px; font-size: 14px;
+  }
+  .vf-amenity-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .vf-amenity-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+  .vf-amenity-clear {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    color: #9ca3af; background: none; border: none; cursor: pointer; font-size: 14px;
+  }
+  .vf-amenity-clear:hover { color: #4b5563; }
+
+  .vf-amenity-box { border-radius: 8px; border: 1px solid var(--border); background: #fff; }
+  .vf-amenity-scroll { max-height: 256px; overflow-y: auto; padding: 12px; }
+  .vf-amenity-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .vf-amenity-empty { font-size: 14px; color: #6b7280; padding: 8px 4px; }
+
+  .vf-pill {
+    padding: 8px 12px; border-radius: 999px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--border); background: #fff; color: #4b5563;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+  .vf-pill:hover { border-color: var(--accent); }
+  .vf-pill.is-active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  @media (min-width: 640px) { .vf-pill { padding: 8px 16px; font-size: 12px; } }
+
+  /* ========================= ACTIONS ========================= */
+  .vf-actions { padding-top: 24px; display: flex; flex-direction: column; gap: 16px; }
+  @media (min-width: 768px) { .vf-actions { flex-direction: row; } }
+
+  .vf-submit {
+    width: 100%; height: 56px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: linear-gradient(to right, var(--accent), var(--accent-2));
+    color: #fff; border: none; border-radius: 12px; font-weight: 700;
+    font-size: 18px; letter-spacing: 0.02em; cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(184,118,60,0.3);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .vf-submit:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); }
+  .vf-submit:active { transform: scale(0.98); }
+  .vf-submit:hover .vf-submit-icon { transform: translateX(4px); }
+  @media (min-width: 768px) { .vf-submit { height: 48px; font-size: 16px; } }
+
+  .vf-submit-icon { font-size: 26px; transition: transform 0.2s; }
+  @media (min-width: 768px) { .vf-submit-icon { font-size: 20px; } }
+
+  .vf-reset {
+    padding: 0 32px; height: 48px; background: #fff; border: 1px solid var(--border);
+    color: #4b5563; border-radius: 6px; font-weight: 500; font-size: 14px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .vf-reset:hover { background: #f9fafb; }
+
+  /* ========================= HEADER ========================= */
+  .vf-hdr { position: fixed; top: 0; left: 0; right: 0; z-index: 50; width: 100%; border-bottom: 1px solid #D4D4D4; background: #fff; }
+  .vf-hdr-wrap { max-width: 80rem; margin: 0 auto; padding: 0 16px; height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: nowrap; }
+  @media (min-width: 640px) { .vf-hdr-wrap { padding: 0 24px; gap: 16px; } }
+
+  .vf-hdr-logo { display: flex; align-items: center; cursor: pointer; flex-shrink: 0; white-space: nowrap; }
+  .vf-hdr-logo h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.04em; text-transform: uppercase; white-space: nowrap; }
+  @media (min-width: 640px) { .vf-hdr-logo h1 { font-size: 24px; } }
+
+  .vf-hdr-mobile-nav { display: flex; align-items: center; gap: 4px; }
+  @media (min-width: 768px) { .vf-hdr-mobile-nav { display: none; } }
+
+  .vf-hdr-mobile-btn {
+    font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em;
+    padding: 6px 8px; border-radius: 999px; white-space: nowrap; background: none; border: none; cursor: pointer;
+    color: rgba(43,43,43,0.7); text-decoration: none;
+  }
+  .vf-hdr-mobile-btn.is-active { color: var(--accent-copper); text-decoration: underline; text-underline-offset: 4px; }
+
+  .vf-hdr-desktop-nav { display: none; }
+  @media (min-width: 768px) { .vf-hdr-desktop-nav { display: flex; align-items: center; gap: 40px; } }
+
+  .vf-hdr-desktop-link {
+    font-size: 14px; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap;
+    text-decoration: none; color: #2B2B2B; background: none; border: none; cursor: pointer;
+    transition: color 0.15s;
+  }
+  .vf-hdr-desktop-link:hover { color: var(--accent-copper); }
+  .vf-hdr-desktop-link.is-active { color: var(--accent-copper); }
+
+  .vf-hdr-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: nowrap; }
+  @media (min-width: 640px) { .vf-hdr-right { gap: 16px; } }
+
+  .vf-hdr-cta {
+    background: var(--accent-copper); color: #fff; padding: 10px 16px; border-radius: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap;
+    border: none; cursor: pointer; transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  }
+  .vf-hdr-cta:hover { background: #a6682e; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+  .vf-hdr-cta:active { transform: scale(0.95); }
+  @media (min-width: 640px) { .vf-hdr-cta { padding: 10px 24px; font-size: 14px; } }
+
+  .vf-hdr-spacer { height: 80px; }
+
+  @media (max-width: 420px) {
+    .vf-hdr-wrap { padding-left: 10px !important; padding-right: 10px !important; gap: 4px !important; }
+    .vf-hdr-logo h1 { font-size: 17px !important; letter-spacing: -0.02em !important; }
+  }
+  @media (max-width: 360px) {
+    .vf-hdr-wrap { gap: 3px !important; }
   }
 `;
 
@@ -150,7 +334,7 @@ function Icon({ name, fill = false, size = "", style = {}, className = "" }) {
   );
 }
 
-// ✅ REPLACED: Header (your provided fixed header exactly)
+// ✅ Header — no Tailwind, plain CSS classes only
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -182,46 +366,40 @@ function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-[#D4D4D4] bg-white">
-        <div className="hdrWrap max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-2 sm:gap-4 flex-nowrap">
+      <header className="vf-hdr">
+        <div className="vf-hdr-wrap">
 
           {/* Logo */}
           <div
-            className="hdrLogo flex items-center cursor-pointer shrink-0 whitespace-nowrap"
+            className="vf-hdr-logo"
             onClick={() => {
               trackEvent("nav_click", { item: "logo" });
               navigate("/");
             }}
           >
-            <h1 className="text-xl sm:text-2xl font-black tracking-tighter uppercase whitespace-nowrap">
+            <h1>
               <span style={{ color: "#B87333" }}>ACQ</span>
               <span style={{ color: "#111111" }}>AR</span>
             </h1>
           </div>
 
           {/* ── MOBILE: Pricing + Resources + Signal ── */}
-          <div className="md:hidden flex items-center gap-1">
+          <div className="vf-hdr-mobile-nav">
             <button
               onClick={() => {
                 trackEvent("nav_click", { item: "pricing" });
                 navigate("/pricing");
               }}
-              className={`text-[9px] font-black uppercase tracking-[0.15em] px-2 py-1.5 rounded-full whitespace-nowrap ${
-                current === "/pricing"
-                  ? "text-[#B87333] underline underline-offset-4"
-                  : "text-[#2B2B2B]/70"
-              }`}
+              className={`vf-hdr-mobile-btn${current === "/pricing" ? " is-active" : ""}`}
             >
               PRICING
             </button>
 
-
-<a
+            <a
               href="http://www.acqar.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[9px] font-black uppercase tracking-[0.15em] px-2 py-1.5 rounded-full whitespace-nowrap text-[#2B2B2B]/70"
-              style={{ textDecoration: 'none' }}
+              className="vf-hdr-mobile-btn"
             >
               SIGNAL™
             </a>
@@ -230,30 +408,14 @@ function Header() {
                 trackEvent("nav_click", { item: "resources" });
                 navigate("/blogs");
               }}
-              className={`text-[9px] font-black uppercase tracking-[0.15em] px-2 py-1.5 rounded-full whitespace-nowrap ${
-                current === "/blogs"
-                  ? "text-[#B87333] underline underline-offset-4"
-                  : "text-[#2B2B2B]/70"
-              }`}
+              className={`vf-hdr-mobile-btn${current === "/blogs" ? " is-active" : ""}`}
             >
               RESOURCES
             </button>
-
-            {/* Mobile Signal */}
-            {/* <a
-              href="http://www.acqar.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[9px] font-black uppercase tracking-[0.15em] px-2 py-1.5 rounded-full whitespace-nowrap text-[#2B2B2B]/70"
-              style={{ textDecoration: 'none' }}
-            >
-              SIGNAL™
-            </a> */}
           </div>
 
           {/* ── DESKTOP nav ── */}
-          <nav className="hidden md:flex items-center gap-10">
-            
+          <nav className="vf-hdr-desktop-nav">
 
             {/* Desktop Signal */}
             <a
@@ -261,10 +423,9 @@ function Header() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Nav", "Click", "Signal")}
-              className="text-sm font-semibold tracking-wide transition-colors hover:text-[#B87333] whitespace-nowrap text-[#2B2B2B]"
-              style={{ textDecoration: 'none' }}
+              className="vf-hdr-desktop-link"
             >
-            SIGNAL™
+              SIGNAL™
             </a>
 
             {navItems.map((item) => (
@@ -274,9 +435,7 @@ function Header() {
                   trackEvent("Nav", "Click", item.label);
                   navigate(item.path);
                 }}
-                className={`text-sm font-semibold tracking-wide transition-colors hover:text-[#B87333] whitespace-nowrap ${
-                  current === item.path ? "text-[#B87333]" : "text-[#2B2B2B]"
-                }`}
+                className={`vf-hdr-desktop-link${current === item.path ? " is-active" : ""}`}
               >
                 {item.label}
               </button>
@@ -284,12 +443,9 @@ function Header() {
           </nav>
 
           {/* ── Right buttons ── */}
-          <div className="hdrRight flex items-center gap-2 sm:gap-4 shrink-0 flex-nowrap">
+          <div className="vf-hdr-right">
             {user ? (
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="bg-[#B87333] text-white px-4 sm:px-6 py-2.5 rounded-md text-[11px] sm:text-sm font-bold tracking-wide hover:bg-[#a6682e] hover:shadow-lg active:scale-95 whitespace-nowrap"
-              >
+              <button onClick={() => navigate("/dashboard")} className="vf-hdr-cta">
                 Dashboard
               </button>
             ) : (
@@ -298,60 +454,23 @@ function Header() {
                   trackEvent("nav_click", { item: "login" });
                   navigate("/login");
                 }}
-                className="bg-[#B87333] text-white px-4 sm:px-6 py-2.5 rounded-md text-[11px] sm:text-sm font-bold tracking-wide hover:bg-[#a6682e] hover:shadow-lg active:scale-95 whitespace-nowrap"
+                className="vf-hdr-cta"
               >
                 Sign In
               </button>
             )}
-
-            {/* Desktop only: Get Started */}
-            {/* <button
-              onClick={() => {
-                trackEvent("valuation_start", { location: "header" });
-                navigate("/valuation");
-              }}
-              className="hidden md:inline-flex hdrCta bg-[#B87333] text-white px-4 sm:px-6 py-2.5 rounded-md text-[11px] sm:text-sm font-bold tracking-wide hover:bg-[#a6682e] hover:shadow-lg active:scale-95 whitespace-nowrap"
-            >
-              Get Started
-            </button> */}
           </div>
 
         </div>
-
-        <style>{`
-          @media (max-width: 420px) {
-            .hdrWrap {
-              padding-left: 10px !important;
-              padding-right: 10px !important;
-              gap: 4px !important;
-            }
-            .hdrLogo h1 {
-              font-size: 17px !important;
-              letter-spacing: -0.02em !important;
-            }
-            .hdrCta {
-              padding: 9px 12px !important;
-              font-size: 10px !important;
-            }
-          }
-
-          @media (max-width: 360px) {
-            .hdrWrap { gap: 3px !important; }
-            .hdrCta {
-              padding: 8px 10px !important;
-              font-size: 10px !important;
-            }
-          }
-        `}</style>
       </header>
 
-      <div className="h-20" />
+      <div className="vf-hdr-spacer" />
     </>
   );
 }
 
 
-// ✅ REPLACED: Footer (your provided footer exactly)
+// ✅ Footer — already self-contained CSS, unchanged
 function Footer() {
   const navigate = useNavigate();
 
@@ -550,13 +669,6 @@ function Footer() {
               <p style={{ fontSize: 12, lineHeight: 1.75, color: 'rgba(10,10,10,0.5)', fontWeight: 500, marginBottom: 28, maxWidth: 280 }}>
                 An AI-powered property intelligence platform built exclusively for Dubai real estate. Independent, institutional-quality, and always on.
               </p>
-              {/* <div className="rics-badge"> */}
-                {/* <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.5C16.5 22.15 20 17.25 20 12V6L12 2z" stroke="#B87333" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M9 12l2 2 4-4" stroke="#B87333" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg> */}
-                {/* <span>RICS-Aligned Intelligence</span> */}
-              {/* </div> */}
               <div className="social-row">
                 {[
                   { href: 'https://www.linkedin.com/company/acqar', label: 'LinkedIn', icon: <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg> },
@@ -598,11 +710,10 @@ function Footer() {
                 <h6>Company</h6>
               </div>
               <ul>
-                {/* {['About ACQAR', 'How It Works', 'Pricing', 'Contact Us', 'Partners'].map(l => ( */}
-                  {['About ACQAR', 'Contact Us'].map(l => (
-  <li key={l}>{l}</li>
-))}
-<li><a href="/broker" style={{ color: 'inherit', textDecoration: 'none' }}>Brokers</a></li>
+                {['About ACQAR', 'Contact Us'].map(l => (
+                  <li key={l}>{l}</li>
+                ))}
+                <li><a href="/broker" style={{ color: 'inherit', textDecoration: 'none' }}>Brokers</a></li>
               </ul>
             </div>
 
@@ -971,7 +1082,6 @@ const DEFAULT_FORM = {
   purpose_of_valuation: "Buy & Sell",
   property_status: "Leased",
   unit_no: "",
-  // apartment_no: "",
   area_value: "",
   area_unit: "sq.ft",
   last_renovated_on: "",
@@ -995,11 +1105,6 @@ export default function ValuationForm({ formData, setFormData }) {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-//   const [showPaywall, setShowPaywall] = useState(false);
-// const [paywallValuationId, setPaywallValuationId] = useState(null);
-// const [pendingNavigation, setPendingNavigation] = useState(false);
-
-  // ✅ auth state to drive routing + hide header
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [sessionUser, setSessionUser] = useState(null);
 
@@ -1062,7 +1167,6 @@ export default function ValuationForm({ formData, setFormData }) {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [location.pathname]);
 
-  // ✅ CHANGED: use DEFAULT_FORM so we can clear UI after success
   const [form, setForm] = useState(formData || DEFAULT_FORM);
 
   const update = (k, v) => setForm((p) => ({ ...p, [k]: v }));
@@ -1097,7 +1201,7 @@ export default function ValuationForm({ formData, setFormData }) {
   const typedDistrictName = norm(selectedDistrict?.district_name || districtQuery || form.district_name);
 
   // ============================
-  // ✅ SIZE RANGE DROPDOWN (NO CONVERSION)  ✅✅ (UPDATED)
+  // ✅ SIZE RANGE DROPDOWN (NO CONVERSION)
   // ============================
   const SIZE_STEP_SQFT = 100;
   const SIZE_MAX_SQFT = 25000;
@@ -1105,39 +1209,31 @@ export default function ValuationForm({ formData, setFormData }) {
   const SIZE_STEP_SQM = 10;
   const SIZE_MAX_SQM = 2500;
 
-  // function midpoint(a, b) {
-  //   const x = (Number(a) + Number(b)) / 2;
-  //   return Math.round(x);
-  // }
-
   function pickAnyInRangeInclusive(a, b) {
-  const start = Math.round(Number(a));
-  const end = Math.round(Number(b));
-  if (!Number.isFinite(start) || !Number.isFinite(end)) return 0;
+    const start = Math.round(Number(a));
+    const end = Math.round(Number(b));
+    if (!Number.isFinite(start) || !Number.isFinite(end)) return 0;
 
-  const lo = Math.min(start, end);
-  const hi = Math.max(start, end);
+    const lo = Math.min(start, end);
+    const hi = Math.max(start, end);
 
-  // Prefer cryptographically-strong randomness if available
-  const n = hi - lo + 1;
-  if (n <= 1) return lo;
+    const n = hi - lo + 1;
+    if (n <= 1) return lo;
 
-  if (typeof window !== "undefined" && window.crypto?.getRandomValues) {
-    // uniform int in [0, n)
-    const u32 = new Uint32Array(1);
-    const max = 0xffffffff;
-    const limit = max - (max % n); // remove modulo bias
-    let x;
-    do {
-      window.crypto.getRandomValues(u32);
-      x = u32[0];
-    } while (x >= limit);
-    return lo + (x % n);
+    if (typeof window !== "undefined" && window.crypto?.getRandomValues) {
+      const u32 = new Uint32Array(1);
+      const max = 0xffffffff;
+      const limit = max - (max % n);
+      let x;
+      do {
+        window.crypto.getRandomValues(u32);
+        x = u32[0];
+      } while (x >= limit);
+      return lo + (x % n);
+    }
+
+    return lo + Math.floor(Math.random() * n);
   }
-
-  // fallback
-  return lo + Math.floor(Math.random() * n);
-}
 
   function buildRanges(unit) {
     const step = unit === "sq.m" ? SIZE_STEP_SQM : SIZE_STEP_SQFT;
@@ -1157,7 +1253,7 @@ export default function ValuationForm({ formData, setFormData }) {
 
   const SIZE_RANGES = useMemo(() => buildRanges(form.area_unit), [form.area_unit]);
 
-const [sizeOpen, setSizeOpen] = useState(false);
+  const [sizeOpen, setSizeOpen] = useState(false);
   const sizeBoxRef = useRef(null);
   const [sizeSearch, setSizeSearch] = useState("");
   const [sizeSelectedLabel, setSizeSelectedLabel] = useState("");
@@ -1183,7 +1279,6 @@ const [sizeOpen, setSizeOpen] = useState(false);
   }
   const RENOVATION_RANGES = useMemo(() => buildRenovationRanges(), []);
 
-
   function getSelectedRangeLabel() {
     const val = Number(form.area_value || 0);
     if (!val) return "";
@@ -1191,7 +1286,6 @@ const [sizeOpen, setSizeOpen] = useState(false);
     return r ? r.label : "";
   }
 
-  // ✅ focus refs (ADDED ONLY)
   const countryRef = useRef(null);
   const cityRef = useRef(null);
   const districtInputRef = useRef(null);
@@ -1231,7 +1325,6 @@ const [sizeOpen, setSizeOpen] = useState(false);
     update("project_reference", "");
   };
 
-  // ✅ NEW: clear UI after successful valuation (does NOT delete localStorage / report)
   function clearUiAfterSuccessfulValuation() {
     setSelectedDistrict(null);
     setDistrictQuery("");
@@ -1246,11 +1339,9 @@ const [sizeOpen, setSizeOpen] = useState(false);
     setFeaturesOpen(true);
     setFeatureSearch("");
 
-    // keep size dropdown clean
     setSizeOpen(false);
     setSizeSearch("");
 
-    // keep renovation dropdown clean
     setRenovationOpen(false);
     setRenovationSearch("");
     setRenovationSelectedLabel("");
@@ -1258,15 +1349,11 @@ const [sizeOpen, setSizeOpen] = useState(false);
     setForm(DEFAULT_FORM);
     setFormData?.(null);
   }
- useEffect(() => {
+  useEffect(() => {
     function onDown(e) {
       if (districtBoxRef.current && !districtBoxRef.current.contains(e.target)) setDistrictOpen(false);
       if (propertyBoxRef.current && !propertyBoxRef.current.contains(e.target)) setPropertyOpen(false);
-
-      // ✅ close size dropdown
       if (sizeBoxRef.current && !sizeBoxRef.current.contains(e.target)) setSizeOpen(false);
-
-      // ✅ close renovation dropdown
       if (renovationBoxRef.current && !renovationBoxRef.current.contains(e.target)) setRenovationOpen(false);
     }
     document.addEventListener("mousedown", onDown);
@@ -1433,7 +1520,6 @@ const [sizeOpen, setSizeOpen] = useState(false);
     setIsLoggedIn(loggedInNow);
     setSessionUser(userNow);
 
-    // ✅ UPDATED: focus missing field (ADDED ONLY)
     if (!isDubaiFlow) {
       setError("Please select Country: United Arab Emirates and City: Dubai.");
       focusField(countryRef);
@@ -1455,8 +1541,6 @@ const [sizeOpen, setSizeOpen] = useState(false);
       focusField(propertyInputRef);
       return;
     }
-
-    
 
     if (!computedSqm || computedSqm <= 0) {
       setError("Please enter Apartment Size (greater than 0).");
@@ -1481,9 +1565,9 @@ const [sizeOpen, setSizeOpen] = useState(false);
         ...form,
         procedure_area: Number(computedSqm),
         rooms_en:
-  form.bedrooms === "studio"
-    ? 0
-    : Number(form.bedrooms || 0),
+          form.bedrooms === "studio"
+            ? 0
+            : Number(form.bedrooms || 0),
 
         district_code: ensuredDistrict?.district_code || "",
         district_name: ensuredDistrict?.district_name || "",
@@ -1527,7 +1611,6 @@ const [sizeOpen, setSizeOpen] = useState(false);
 
         unit_no: payload.unit_no || "",
 
-        // apartment_no: payload.apartment_no || "",
         apartment_size: payload.area_value || "",
         apartment_size_unit: payload.area_unit || "",
         last_renovated_on: payload.last_renovated_on || null,
@@ -1547,27 +1630,8 @@ const [sizeOpen, setSizeOpen] = useState(false);
         updated_at: new Date().toISOString(),
       };
 
-  //     try {
-  //       const valuationRowId = await insertValuationRow(row);
-  //       if (valuationRowId) localStorage.setItem(LS_VAL_ROW_ID, String(valuationRowId));
-  //     } catch (dbErr) {
-  //       console.warn("Valuations insert blocked (likely RLS). Keeping flow:", dbErr?.message);
-  //       localStorage.removeItem(LS_VAL_ROW_ID);
-  //       localStorage.setItem(LS_PENDING_INSERT, JSON.stringify(row));
-  //     }
-
-  //     clearUiAfterSuccessfulValuation();
-
-  //     if (loggedInNow) navigate("/report");
-  //     else navigate("/valucheck");
-  //   } catch (e) {
-  //     console.error(e);
-  //     setError(e?.message || "Could not save district/property to database (check RLS policies).");
-  //   }
-  // };
-
-   let valuationRowId = null;
-   try {
+      let valuationRowId = null;
+      try {
         valuationRowId = await insertValuationRow(row);
         if (valuationRowId) localStorage.setItem(LS_VAL_ROW_ID, String(valuationRowId));
       } catch (dbErr) {
@@ -1578,37 +1642,33 @@ const [sizeOpen, setSizeOpen] = useState(false);
 
       // Paywall check — only for logged in users
       if (loggedInNow && userNow?.id) {
-  const { data: userData } = await supabase
-    .from("users")
-    .select("free_reports_used, free_reports_limit, plan")
-    .eq("id", userNow.id)
-    .single();
+        const { data: userData } = await supabase
+          .from("users")
+          .select("free_reports_used, free_reports_limit, plan")
+          .eq("id", userNow.id)
+          .single();
 
-  const used = userData?.free_reports_used ?? 0;
-  const limit = userData?.free_reports_limit ?? 3;
-  const plan = userData?.plan || "free";
+        const used = userData?.free_reports_used ?? 0;
+        const limit = userData?.free_reports_limit ?? 3;
+        const plan = userData?.plan || "free";
 
-  
+        localStorage.setItem(
+          "truvalu_report_locked",
+          plan !== "pro" && used >= limit ? "1" : "0"
+        );
+      }
 
-  localStorage.setItem(
-    "truvalu_report_locked",
-    plan !== "pro" && used >= limit ? "1" : "0"
-  );
-}
+      clearUiAfterSuccessfulValuation();
+      if (loggedInNow) navigate("/report");
+      else navigate("/valucheck");
 
-clearUiAfterSuccessfulValuation();
-if (loggedInNow) navigate("/report");
-else navigate("/valucheck");
-      
     } catch (e) {
       console.error(e);
       setError(e?.message || "Could not save district/property to database (check RLS policies).");
     }
   };
 
-  
-
- const onReset = () => {
+  const onReset = () => {
     setError("");
     trackEvent("valuation_reset", { page: "valuation_form" });
     resetDistrictAndProperty();
@@ -1632,65 +1692,54 @@ else navigate("/valucheck");
   };
 
   return (
-    <div className="bg-[#F8F8F8] text-gray-900 font-sans min-h-screen">
-       {/* <Helmet> */}
-        <title>Get Your Free Property Valuation | Acqar Truvalu</title>
-        <meta name="robots" content="noindex, nofollow" />
-      {/* </Helmet> */}
+    <div className="vf-page">
+      <title>Get Your Free Property Valuation | Acqar Truvalu</title>
+      <meta name="robots" content="noindex, nofollow" />
       <style>{styles}</style>
 
-      {/* ✅ show NEW Header only when NOT logged in (same behavior as before) */}
       {!isLoggedIn ? <Header /> : null}
 
-      {/* ✅ keep your old NavBar behavior when logged out? (REPLACED by Header) */}
-      {/* {!isLoggedIn ? <NavBar /> : null} */}
-
-      {/* ✅ IMPORTANT: removed top padding because Header is fixed + includes spacer */}
-      <main className="pb-12 sm:pb-16 md:pb-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <main className="vf-main">
+        <div className="vf-container">
           {/* Header Section */}
-          <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 sm:mb-3">Property Details</h1>
-            <p className="text-gray-500 text-xs sm:text-sm">
+          <div className="vf-hero">
+            <h1 className="vf-hero-title">Property Details</h1>
+            <p className="vf-hero-sub">
               Please provide the structural and legal specifications of your asset
-              <br className="hidden sm:block" />
+              <br className="vf-hero-break" />
               for a RICS-standard AI valuation.
             </p>
           </div>
 
           {/* Progress Bar */}
-          <div className="mb-6 sm:mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <div className="h-[2px] flex-1 bg-gray-200 relative">
-                <div className="absolute left-0 top-0 h-full w-1/2 bg-[#B8763C]" />
+          <div className="vf-progress-wrap">
+            <div className="vf-progress-row">
+              <div className="vf-progress-track">
+                <div className="vf-progress-fill" />
               </div>
             </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-gray-400">PROGRESS</span>
-              <span className="text-sm font-bold">Step 2 of 4</span>
+            <div className="vf-progress-labels">
+              <span className="vf-progress-caption">PROGRESS</span>
+              <span className="vf-progress-step">Step 2 of 4</span>
             </div>
           </div>
 
           {/* Main Form Card */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-4 sm:p-6 md:p-8 space-y-8">
-              {error ? (
-                <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm font-semibold">
-                  {error}
-                </div>
-              ) : null}
+          <div className="vf-card">
+            <div className="vf-card-body">
+              {error ? <div className="vf-error">{error}</div> : null}
 
               {/* 01. LOCATION */}
-              <section className="space-y-4">
-                <h2 className="text-sm font-bold tracking-wider">01. LOCATION</h2>
+              <section className="vf-section">
+                <h2 className="vf-section-title">01. LOCATION</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="vf-grid-3">
                   {/* COUNTRY */}
                   <div>
                     <Label>COUNTRY</Label>
                     <select
                       ref={countryRef}
-                      className="w-full h-11 bg-white border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm"
+                      className="vf-select"
                       value={form.country}
                       onChange={(e) => {
                         const v = e.target.value;
@@ -1713,7 +1762,7 @@ else navigate("/valucheck");
                     <Label>CITY</Label>
                     <select
                       ref={cityRef}
-                      className="w-full h-11 bg-white border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm"
+                      className="vf-select"
                       value={form.city}
                       onChange={(e) => {
                         update("city", e.target.value);
@@ -1730,24 +1779,22 @@ else navigate("/valucheck");
                   </div>
 
                   {/* DISTRICT */}
-                  <div ref={districtBoxRef} className="relative">
+                  <div ref={districtBoxRef} className="vf-rel">
                     <Label>DISTRICT / AREA</Label>
 
                     <input
                       ref={districtInputRef}
-                      className="w-full h-11 bg-white border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm"
+                      className="vf-input"
                       placeholder={isDubaiFlow ? "Select district" : "Select UAE + Dubai first"}
                       value={selectedDistrict ? selectedDistrict.district_name : districtQuery}
                       disabled={!isDubaiFlow}
                       readOnly
                       inputMode="none"
                       onClick={() => {
-                        // ✅ allow re-select / open search again
                         setSelectedDistrict(null);
-                        setDistrictQuery(""); // start fresh search
+                        setDistrictQuery("");
                         setDistrictOpen(true);
 
-                        // ✅ reset property when district changes
                         setSelectedProperty(null);
                         setPropertyQuery("");
                         setPropertyResults([]);
@@ -1762,12 +1809,11 @@ else navigate("/valucheck");
                       }}
                     />
 
-                    {/* ✅ Mobile-friendly anchored dropdown */}
                     {districtOpen && isDubaiFlow ? (
-                      <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
-                        <div className="p-3 border-b border-gray-100 bg-white sticky top-0 z-10">
+                      <div className="vf-dropdown">
+                        <div className="vf-dropdown-search-wrap">
                           <input
-                            className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] text-sm"
+                            className="vf-dropdown-search"
                             placeholder="Search district..."
                             value={districtQuery}
                             onChange={(e) => {
@@ -1775,7 +1821,6 @@ else navigate("/valucheck");
                               setDistrictQuery(v);
                               setSelectedDistrict(null);
 
-                              // reset property
                               setSelectedProperty(null);
                               setPropertyQuery("");
                               setPropertyResults([]);
@@ -1786,44 +1831,17 @@ else navigate("/valucheck");
                               update("area_name_en", v);
                             }}
                           />
-
-                          {/* {canAddTypedDistrict ? (
-                            <button
-                              type="button"
-                              className="mt-2 w-full text-left px-3 py-2 rounded-lg bg-orange-50 border border-orange-200 text-orange-700 text-xs font-semibold hover:bg-orange-100"
-                              onClick={() => {
-                                const dn = norm(districtQuery);
-                                if (!dn) return;
-                                const d = { district_code: "", district_name: dn };
-                                setSelectedDistrict(d);
-                                setDistrictQuery(dn);
-                                setDistrictOpen(false);
-
-                                update("district_code", "");
-                                update("district_name", dn);
-                                update("area_name_en", dn);
-
-                                // reset property
-                                setSelectedProperty(null);
-                                setPropertyQuery("");
-                                setPropertyResults([]);
-                                setPropertyOpen(false);
-                              }}
-                            >
-                              + Use "{norm(districtQuery)}" (add new)
-                            </button>
-                          ) : null} */}
                         </div>
 
-                        <div className="max-h-64 overflow-auto overscroll-contain">
+                        <div className="vf-dropdown-list">
                           {filteredDistricts.length === 0 && !districtLoading ? (
-                            <div className="px-4 py-3 text-sm text-gray-500">No districts found</div>
+                            <div className="vf-dropdown-empty">No districts found</div>
                           ) : (
                             filteredDistricts.map((d) => (
                               <button
                                 key={`${d.district_code}-${d.district_name}`}
                                 type="button"
-                                className="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 active:bg-gray-100"
+                                className="vf-option"
                                 onClick={() => {
                                   setSelectedDistrict(d);
                                   setDistrictQuery(d.district_name);
@@ -1833,7 +1851,6 @@ else navigate("/valucheck");
                                   update("district_name", d.district_name || "");
                                   update("area_name_en", d.district_name || "");
 
-                                  // reset property
                                   setSelectedProperty(null);
                                   setPropertyQuery("");
                                   setPropertyResults([]);
@@ -1846,11 +1863,11 @@ else navigate("/valucheck");
                           )}
                         </div>
 
-                        <div className="sm:hidden border-t border-gray-100 p-2 bg-white">
+                        <div className="vf-dropdown-close-wrap">
                           <button
                             type="button"
                             onClick={() => setDistrictOpen(false)}
-                            className="w-full h-10 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700 bg-white active:bg-gray-50"
+                            className="vf-dropdown-close"
                           >
                             Close
                           </button>
@@ -1862,25 +1879,24 @@ else navigate("/valucheck");
               </section>
 
               {/* 02. PROPERTY SPECIFICATIONS */}
-              <section className="space-y-4 pt-4 border-t border-gray-100">
-                <h2 className="text-sm font-bold tracking-wider">02. PROPERTY SPECIFICATIONS</h2>
+              <section className="vf-section vf-section-bordered">
+                <h2 className="vf-section-title">02. PROPERTY SPECIFICATIONS</h2>
 
                 {/* Row 1: Building / Project Name */}
-                <div className="grid grid-cols-1 gap-4">
-                  <div ref={propertyBoxRef} className="relative">
+                <div className="vf-grid-1">
+                  <div ref={propertyBoxRef} className="vf-rel">
                     <Label>BUILDING / PROJECT NAME</Label>
                     <input
                       ref={propertyInputRef}
-                      className="w-full h-11 bg-white border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm"
+                      className="vf-input"
                       placeholder={typedDistrictName ? "Select property" : "Select district first"}
                       value={selectedProperty ? selectedProperty.property_name : propertyQuery}
                       disabled={!typedDistrictName}
                       readOnly
                       inputMode="none"
                       onClick={() => {
-                        // ✅ allow re-select / open search again
                         setSelectedProperty(null);
-                        setPropertyQuery(""); // start fresh search
+                        setPropertyQuery("");
                         setPropertyOpen(true);
 
                         update("property_name", "");
@@ -1890,11 +1906,11 @@ else navigate("/valucheck");
                     />
 
                     {propertyOpen && typedDistrictName ? (
-                      <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
-                        <div className="p-3 border-b border-gray-100 bg-white sticky top-0 z-10">
-                          <div className="relative">
+                      <div className="vf-dropdown">
+                        <div className="vf-dropdown-search-wrap">
+                          <div className="vf-rel">
                             <input
-                              className="w-full h-9 px-3 bg-gray-50 border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] text-sm"
+                              className="vf-dropdown-search vf-dropdown-search-sm"
                               placeholder="Search property..."
                               value={propertyQuery}
                               onChange={(e) => {
@@ -1906,38 +1922,18 @@ else navigate("/valucheck");
                                 update("project_name_en", v);
                               }}
                             />
-
-                            {/* {canAddTypedProperty ? (
-                              <button
-                                type="button"
-                                className="mt-2 w-full text-left px-3 py-2 rounded-md bg-orange-50 border border-orange-200 text-orange-700 text-xs font-semibold hover:bg-orange-100"
-                                onClick={() => {
-                                  const pn = norm(propertyQuery);
-                                  if (!pn) return;
-                                  const p = { property_name: pn };
-                                  setSelectedProperty(p);
-                                  setPropertyQuery(pn);
-                                  setPropertyOpen(false);
-                                  update("property_name", pn);
-                                  update("project_reference", pn);
-                                  update("project_name_en", pn);
-                                }}
-                              >
-                                + Use "{norm(propertyQuery)}" (add new)
-                              </button>
-                            ) : null} */}
                           </div>
                         </div>
 
-                        <div className="max-h-[50vh] sm:max-h-60 overflow-auto">
+                        <div className="vf-dropdown-list vf-dropdown-list-tall">
                           {filteredProperties.length === 0 && !propertyLoading ? (
-                            <div className="px-4 py-3 text-sm text-gray-500">No properties found</div>
+                            <div className="vf-dropdown-empty">No properties found</div>
                           ) : (
                             filteredProperties.map((p) => (
                               <button
                                 key={p.property_name}
                                 type="button"
-                                className="w-full text-left px-4 py-3 sm:py-2.5 text-sm hover:bg-gray-50"
+                                className="vf-option vf-option-tight"
                                 onClick={() => {
                                   setSelectedProperty(p);
                                   setPropertyQuery(p.property_name);
@@ -1953,11 +1949,11 @@ else navigate("/valucheck");
                           )}
                         </div>
 
-                        <div className="sm:hidden border-t border-gray-100 p-2">
+                        <div className="vf-dropdown-close-wrap">
                           <button
                             type="button"
                             onClick={() => setPropertyOpen(false)}
-                            className="w-full h-10 rounded-md border border-gray-200 text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50"
+                            className="vf-dropdown-close"
                           >
                             Close
                           </button>
@@ -1968,11 +1964,11 @@ else navigate("/valucheck");
                 </div>
 
                 {/* Row 2: Title Deed Number + Plot Number */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="vf-grid-2">
                   <div>
                     <Label>TITLE DEED NUMBER (Optional)</Label>
                     <input
-                      className="w-full h-11 bg-white border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm"
+                      className="vf-input"
                       placeholder="e.g. 12347904"
                       value={form.title_deed_no || ""}
                       onChange={(e) => update("title_deed_no", e.target.value)}
@@ -1981,18 +1977,8 @@ else navigate("/valucheck");
 
                   <div>
                     <Label>PLOT NUMBER (Optional) </Label>
-
                     <input
-                      className="
-                        w-full h-12
-                        bg-white border border-gray-200
-                        rounded-lg
-                        px-3 text-sm
-                        placeholder:text-gray-400
-                        focus:ring-2 focus:ring-[#B8763C]/30
-                        focus:border-[#B8763C]
-                        transition-all
-                      "
+                      className="vf-input-plain"
                       placeholder="Enter plot number"
                       value=""
                       onChange={(e) => update("plot_no", e.target.value)}
@@ -2003,7 +1989,7 @@ else navigate("/valucheck");
                 {/* Row 3: Tenure Type */}
                 <div>
                   <Label>TENURE TYPE</Label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="vf-toggle-row">
                     {TITLE_DEED_TYPES.map((t) => (
                       <ToggleBtnClean key={t} active={form.title_deed_type === t} onClick={() => update("title_deed_type", t)} label={t} />
                     ))}
@@ -2011,227 +1997,189 @@ else navigate("/valucheck");
                 </div>
               </section>
 
-              {/* 03. VALUATION TYPE
-              <section className="space-y-4 pt-4 border-t border-gray-100">
-                <h2 className="text-sm font-bold tracking-wider">03. VALUATION TYPE</h2>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {["MARKET VALUE", "RENTAL YIELD", "MORTGAGE APP.", "REINSTATEMENT"].map((x) => {
-                    const mapping = {
-                      "MARKET VALUE": "Current Market Value",
-                      "RENTAL YIELD": "Historical Property Value",
-                      "MORTGAGE APP.": "Verify Previous Valuation",
-                      REINSTATEMENT: "Reinstatement Value",
-                    };
-                    const formValue = mapping[x];
-                    return (
-                      <ToggleBtnClean key={x} active={form.valuation_type === formValue} onClick={() => update("valuation_type", formValue)} label={x} />
-                    );
-                  })}
-                </div>
-              </section> */}
-
               {/* 04. UNIT DETAILS */}
-              <section className="space-y-4 pt-4 border-t border-gray-100">
-                <h2 className="text-sm font-bold tracking-wider">04. UNIT DETAILS</h2>
+              <section className="vf-section vf-section-bordered">
+                <h2 className="vf-section-title">04. UNIT DETAILS</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="vf-grid-4">
                   <div>
-                     <Label>UNIT NO. (Optional)</Label>
+                    <Label>UNIT NO. (Optional)</Label>
                     <input
                       ref={aptRef}
-                      className="w-full h-11 bg-white border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm"
+                      className="vf-input"
                       placeholder="e.g. 12A"
-                       value={form.unit_no || ""}
-    onChange={(e) => update("unit_no", e.target.value)}
+                      value={form.unit_no || ""}
+                      onChange={(e) => update("unit_no", e.target.value)}
                     />
+                  </div>
 
-              </div>
-
-             
                   {/* ✅ SIZE (type manually OR pick range; NO conversion) */}
-                  <div ref={sizeBoxRef} className="relative">
-      <Label>
-        SIZE{" "}
-        <span className="text-[10px] text-[#B8763C] ml-1">
-          {form.area_unit === "sq.m" ? "SqM ▼" : "SqFt ▼"}
-        </span>
-      </Label>
+                  <div ref={sizeBoxRef} className="vf-rel">
+                    <Label>
+                      SIZE{" "}
+                      <span className="vf-size-unit-tag">
+                        {form.area_unit === "sq.m" ? "SqM ▼" : "SqFt ▼"}
+                      </span>
+                    </Label>
 
-      <div className="relative flex">
-        {/* LEFT: input (typing allowed) + arrow toggle */}
-        <div className="relative w-full">
-          <input
-            ref={sizeRef}
-            inputMode="decimal"
-            className="w-full h-11 bg-white border border-gray-200 rounded-l-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm text-left pr-9"
-            value={sizeSelectedLabel || (form.area_value || "")}
-            placeholder="Total Area"
-            onChange={(e) => {
-              // ✅ user typing => show typed number (not range label)
-              setSizeSelectedLabel("");
+                    <div className="vf-size-row">
+                      <div className="vf-size-input-col">
+                        <input
+                          ref={sizeRef}
+                          inputMode="decimal"
+                          className="vf-size-input"
+                          value={sizeSelectedLabel || (form.area_value || "")}
+                          placeholder="Total Area"
+                          onChange={(e) => {
+                            setSizeSelectedLabel("");
+                            let v = e.target.value.replace(/[^\d.]/g, "");
+                            const parts = v.split(".");
+                            if (parts.length > 2) v = parts[0] + "." + parts.slice(1).join("");
+                            update("area_value", v);
+                          }}
+                          onClick={() => {
+                            if (!sizeOpen) setSizeSearch("");
+                            setSizeOpen(true);
+                          }}
+                        />
 
-              let v = e.target.value.replace(/[^\d.]/g, "");
-              const parts = v.split(".");
-              if (parts.length > 2) v = parts[0] + "." + parts.slice(1).join("");
-              update("area_value", v);
-            }}
-            onClick={() => {
-              // ✅ open dropdown on click (keep label if already selected)
-              if (!sizeOpen) setSizeSearch("");
-              setSizeOpen(true);
-            }}
-          />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!sizeOpen) setSizeSearch("");
+                            setSizeOpen((v) => !v);
+                          }}
+                          className="vf-size-arrow"
+                          aria-label="Toggle size ranges"
+                        >
+                          ▼
+                        </button>
+                      </div>
 
-          {/* dropdown opens ONLY when arrow clicked */}
-          <button
-            type="button"
-            onClick={() => {
-              if (!sizeOpen) setSizeSearch("");
-              setSizeOpen((v) => !v);
-            }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            aria-label="Toggle size ranges"
-          >
-            ▼
-          </button>
-        </div>
+                      <select
+                        className="vf-size-unit-select"
+                        value={form.area_unit}
+                        onChange={(e) => {
+                          update("area_unit", e.target.value);
+                          setSizeSelectedLabel("");
+                        }}
+                      >
+                        <option value="sq.ft">Sq Ft</option>
+                        <option value="sq.m">Sq M</option>
+                      </select>
 
-        {/* RIGHT: unit selector (NO conversion) */}
-        <select
-          className="h-11 bg-gray-50 border border-l-0 border-gray-200 rounded-r-md px-2 text-xs focus:ring-0"
-          value={form.area_unit}
-          onChange={(e) => {
-            // ✅ NO conversion: only switch unit label
-            update("area_unit", e.target.value);
+                      {sizeOpen ? (
+                        <div className="vf-dropdown">
+                          <div className="vf-dropdown-search-wrap">
+                            <input
+                              className="vf-dropdown-search"
+                              placeholder={
+                                form.area_unit === "sq.m"
+                                  ? "Search (sqm) e.g. 50 or 50-60"
+                                  : "Search (sqft) e.g. 500 or 500-600"
+                              }
+                              value={sizeSearch}
+                              onChange={(e) => {
+                                setSizeSelectedLabel("");
+                                let v = e.target.value.replace(/[^\d.]/g, "");
+                                const parts = v.split(".");
+                                if (parts.length > 2) v = parts[0] + "." + parts.slice(1).join("");
+                                update("area_value", v);
+                              }}
+                            />
+                          </div>
 
-            // ✅ clear label because ranges list changes
-            setSizeSelectedLabel("");
-          }}
-        >
-          <option value="sq.ft">Sq Ft</option>
-          <option value="sq.m">Sq M</option>
-        </select>
+                          <div className="vf-dropdown-list">
+                            {(() => {
+                              const q = (sizeSearch || "").trim().toLowerCase();
 
-        {/* dropdown */}
-        {sizeOpen ? (
-          <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
-            <div className="p-3 border-b border-gray-100 bg-white sticky top-0 z-10">
-              <input
-                className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] text-sm"
-                placeholder={
-                  form.area_unit === "sq.m"
-                    ? "Search (sqm) e.g. 50 or 50-60"
-                    : "Search (sqft) e.g. 500 or 500-600"
-                }
-                value={sizeSearch}
-               onChange={(e) => {
-  // ✅ typing a value should override any selected range label
-  setSizeSelectedLabel("");
+                              const filtered = SIZE_RANGES.filter((r) => {
+                                if (!q) return true;
+                                return r.label.includes(q);
+                              });
 
-  let v = e.target.value.replace(/[^\d.]/g, "");
-  const parts = v.split(".");
-  if (parts.length > 2) v = parts[0] + "." + parts.slice(1).join("");
-  update("area_value", v);
-}}
+                              if (filtered.length === 0) {
+                                return <div className="vf-dropdown-empty">No ranges found</div>;
+                              }
 
-              />
-            </div>
+                              return filtered.map((r) => {
+                                const display = r.label;
 
-            <div className="max-h-64 overflow-auto overscroll-contain">
-              {(() => {
-                const q = (sizeSearch || "").trim().toLowerCase();
+                                return (
+                                  <button
+                                    key={r.label}
+                                    type="button"
+                                    className="vf-option"
+                                    onClick={() => {
+                                      const v = pickAnyInRangeInclusive(r.start, r.end);
+                                      update("area_value", String(v));
+                                      setSizeSelectedLabel(r.label);
+                                      setSizeOpen(false);
+                                    }}
+                                  >
+                                    {display}{" "}
+                                    <span style={{ color: "#9ca3af", fontSize: 12, marginLeft: 8 }}>{form.area_unit}</span>
+                                  </button>
+                                );
+                              });
+                            })()}
+                          </div>
 
-                const filtered = SIZE_RANGES.filter((r) => {
-                  if (!q) return true;
-                  return r.label.includes(q);
-                });
-
-                if (filtered.length === 0) {
-                  return <div className="px-4 py-3 text-sm text-gray-500">No ranges found</div>;
-                }
-
-                return filtered.map((r) => {
-                  const display = r.label;
-
-                  return (
-                    <button
-                      key={r.label}
-                      type="button"
-                      className="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 active:bg-gray-100"
-                      onClick={() => {
-                        // ✅ pick ANY value inside selected range for valuation
-                        const v = pickAnyInRangeInclusive(r.start, r.end);
-                        update("area_value", String(v)); // numeric used for valuation
-                        setSizeSelectedLabel(r.label);   // label shown to user
-                        setSizeOpen(false);
-                      }}
-                    >
-                      {display}{" "}
-                      <span className="text-gray-400 text-xs ml-2">{form.area_unit}</span>
-                    </button>
-                  );
-                });
-              })()}
-            </div>
-
-            <div className="sm:hidden border-t border-gray-100 p-2 bg-white">
-              <button
-                type="button"
-                onClick={() => setSizeOpen(false)}
-                className="w-full h-10 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700 bg-white active:bg-gray-50"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        ) : null}
-      </div>
-    </div>
+                          <div className="vf-dropdown-close-wrap">
+                            <button
+                              type="button"
+                              onClick={() => setSizeOpen(false)}
+                              className="vf-dropdown-close"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
 
                   <div>
                     <Label>BEDROOMS </Label>
-                  
-                   <select
-  className="w-full h-11 bg-white border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm"
-  value={
-    String(
-      form.bedrooms === 0 || form.bedrooms === "0" || form.bedrooms === "" || form.bedrooms == null
-        ? "studio"
-        : form.bedrooms
-    )
-  }
-  onChange={(e) => update("bedrooms", e.target.value)}
->
-  <option value="studio">Studio</option>
-  {BEDROOMS.filter((x) => String(x) !== "0").map((x) => (
-    <option key={x} value={x}>
-      {x} Bedroom{x !== "1" ? "s" : ""}
-    </option>
-  ))}
-</select>
+                    <select
+                      className="vf-select"
+                      value={
+                        String(
+                          form.bedrooms === 0 || form.bedrooms === "0" || form.bedrooms === "" || form.bedrooms == null
+                            ? "studio"
+                            : form.bedrooms
+                        )
+                      }
+                      onChange={(e) => update("bedrooms", e.target.value)}
+                    >
+                      <option value="studio">Studio</option>
+                      {BEDROOMS.filter((x) => String(x) !== "0").map((x) => (
+                        <option key={x} value={x}>
+                          {x} Bedroom{x !== "1" ? "s" : ""}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div>
                     <Label>BATHROOMS </Label>
-                    
                     <select
-  className="w-full h-11 bg-white border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm"
-  value={String(form.bathrooms === "" || form.bathrooms == null || form.bathrooms === "-" ? "1" : form.bathrooms)}
-  onChange={(e) => update("bathrooms", e.target.value)}
->
-  {BATHROOMS.map((x) => (
-    <option key={x} value={x}>
-      {x} Bathroom{x !== "1" ? "s" : ""}
-    </option>
-  ))}
-</select>
+                      className="vf-select"
+                      value={String(form.bathrooms === "" || form.bathrooms == null || form.bathrooms === "-" ? "1" : form.bathrooms)}
+                      onChange={(e) => update("bathrooms", e.target.value)}
+                    >
+                      {BATHROOMS.map((x) => (
+                        <option key={x} value={x}>
+                          {x} Bathroom{x !== "1" ? "s" : ""}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
                 <div>
                   <Label>FURNISHING STATUS</Label>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="vf-toggle-row-lg">
                     {["Fully Furnished", "Semi-Furnished", "Unfurnished"].map((x) => {
                       const mapping = {
                         "Fully Furnished": "Furnished",
@@ -2240,15 +2188,15 @@ else navigate("/valucheck");
                       };
                       const formValue = mapping[x];
                       return (
-                        <label key={x} className="flex items-center gap-2 cursor-pointer">
+                        <label key={x} className="vf-radio-label">
                           <input
                             type="radio"
                             name="furnishing"
                             checked={form.furnishing === formValue}
                             onChange={() => update("furnishing", formValue)}
-                            className="w-4 h-4 text-[#B8763C] focus:ring-[#B8763C]"
+                            className="vf-radio-input"
                           />
-                          <span className="text-sm">{x}</span>
+                          <span className="vf-radio-text">{x}</span>
                         </label>
                       );
                     })}
@@ -2258,7 +2206,7 @@ else navigate("/valucheck");
                 {/* ✅ IS RENOVATED? */}
                 <div>
                   <Label>IS RENOVATED?</Label>
-                  <div className="flex gap-3">
+                  <div className="vf-toggle-row-sm">
                     <ToggleBtnClean
                       label="Yes"
                       active={form.is_renovated === true}
@@ -2277,12 +2225,13 @@ else navigate("/valucheck");
                   </div>
 
                   {form.is_renovated === true ? (
-                    <div ref={renovationBoxRef} className="relative mt-3">
+                    <div ref={renovationBoxRef} className="vf-rel" style={{ marginTop: 12 }}>
                       <Label>RENOVATION AMOUNT (AED)</Label>
-                      <div className="relative">
+                      <div className="vf-rel">
                         <input
                           inputMode="decimal"
-                          className="w-full h-11 bg-white border border-gray-200 rounded-md focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] px-3 text-sm pr-9"
+                          className="vf-input"
+                          style={{ paddingRight: 36 }}
                           value={renovationSelectedLabel || (form.renovation_amount || "")}
                           placeholder="e.g. 5000"
                           onChange={(e) => {
@@ -2303,17 +2252,17 @@ else navigate("/valucheck");
                             if (!renovationOpen) setRenovationSearch("");
                             setRenovationOpen((v) => !v);
                           }}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          className="vf-size-arrow"
                           aria-label="Toggle renovation ranges"
                         >
                           ▼
                         </button>
 
                         {renovationOpen ? (
-                          <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
-                            <div className="p-3 border-b border-gray-100 bg-white sticky top-0 z-10">
+                          <div className="vf-dropdown">
+                            <div className="vf-dropdown-search-wrap">
                               <input
-                                className="w-full h-10 px-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] text-sm"
+                                className="vf-dropdown-search"
                                 placeholder="Search amount e.g. 5000"
                                 value={renovationSearch}
                                 onChange={(e) => {
@@ -2327,7 +2276,7 @@ else navigate("/valucheck");
                               />
                             </div>
 
-                            <div className="max-h-64 overflow-auto overscroll-contain">
+                            <div className="vf-dropdown-list">
                               {RENOVATION_RANGES.filter((r) => {
                                 const q = (renovationSearch || "").trim().toLowerCase();
                                 if (!q) return true;
@@ -2340,7 +2289,7 @@ else navigate("/valucheck");
                                 <button
                                   key={r.label}
                                   type="button"
-                                  className="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 active:bg-gray-100"
+                                  className="vf-option"
                                   onClick={() => {
                                     const v = pickAnyInRangeInclusive(r.start, r.end);
                                     update("renovation_amount", String(v));
@@ -2353,11 +2302,11 @@ else navigate("/valucheck");
                               ))}
                             </div>
 
-                            <div className="sm:hidden border-t border-gray-100 p-2 bg-white">
+                            <div className="vf-dropdown-close-wrap">
                               <button
                                 type="button"
                                 onClick={() => setRenovationOpen(false)}
-                                className="w-full h-10 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700 bg-white active:bg-gray-50"
+                                className="vf-dropdown-close"
                               >
                                 Close
                               </button>
@@ -2371,20 +2320,20 @@ else navigate("/valucheck");
               </section>
 
               {/* 05. FEATURES & AMENITIES */}
-              <section className="space-y-4 pt-4 border-t border-gray-100">
-                <h2 className="text-sm font-bold tracking-wider">05. FEATURES & AMENITIES</h2>
+              <section className="vf-section vf-section-bordered">
+                <h2 className="vf-section-title">05. FEATURES & AMENITIES</h2>
 
                 {/* Search */}
-                <div className="relative">
+                <div className="vf-amenity-search-wrap">
                   <input
                     type="text"
                     value={featureSearch}
                     onChange={(e) => setFeatureSearch(e.target.value)}
                     placeholder="Search amenities..."
-                    className="w-full h-11 bg-white border border-gray-200 rounded-md px-10 text-sm focus:ring-1 focus:ring-[#B8763C] focus:border-[#B8763C] outline-none"
+                    className="vf-amenity-search"
                   />
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <span className="vf-amenity-search-icon">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </span>
@@ -2393,7 +2342,7 @@ else navigate("/valucheck");
                     <button
                       type="button"
                       onClick={() => setFeatureSearch("")}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="vf-amenity-clear"
                       aria-label="clear amenities search"
                     >
                       ✕
@@ -2402,9 +2351,9 @@ else navigate("/valucheck");
                 </div>
 
                 {/* Scroll container */}
-                <div className="rounded-lg border border-gray-200 bg-white">
-                  <div className="max-h-64 overflow-y-auto p-3">
-                    <div className="flex flex-wrap gap-2">
+                <div className="vf-amenity-box">
+                  <div className="vf-amenity-scroll">
+                    <div className="vf-amenity-list">
                       {(filteredAmenities || []).map((a) => {
                         const on = (form.amenities || []).includes(a);
                         return (
@@ -2412,58 +2361,29 @@ else navigate("/valucheck");
                             key={a}
                             type="button"
                             onClick={() => toggleAmenity(a)}
-                            className={
-                              on
-                                ? "px-3 sm:px-4 py-2 bg-[#B8763C] text-white rounded-full text-[11px] sm:text-xs font-medium"
-                                : "px-3 sm:px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-full text-[11px] sm:text-xs font-medium hover:border-[#B8763C]"
-                            }
+                            className={`vf-pill${on ? " is-active" : ""}`}
                           >
                             {a}
                           </button>
                         );
                       })}
 
-                      {filteredAmenities?.length === 0 ? <div className="text-sm text-gray-500 px-1 py-2">No amenities found.</div> : null}
+                      {filteredAmenities?.length === 0 ? <div className="vf-amenity-empty">No amenities found.</div> : null}
                     </div>
                   </div>
                 </div>
               </section>
 
               {/* Actions */}
-              <div className="pt-6 flex flex-col md:flex-row gap-4">
-                <button
-                  type="button"
-                  onClick={onNext}
-                  className="
-                    group w-full h-14 md:h-12
-                    bg-gradient-to-r from-[#B8763C] to-[#C98945]
-                    text-white rounded-xl font-bold
-                    text-[18px] md:text-[16px]
-                    tracking-wide
-                    shadow-lg shadow-[#B8763C]/30
-                    active:scale-[0.98] hover:shadow-xl
-                    transition-all duration-200
-                    flex items-center justify-center gap-2
-                  "
-                >
+              <div className="vf-actions">
+                <button type="button" onClick={onNext} className="vf-submit">
                   Get Free Valuation
-
-                  <span
-                    className="
-                      material-symbols-outlined
-                      text-[26px] md:text-[20px]
-                      transition-transform group-hover:translate-x-1
-                    "
-                  >
+                  <span className="material-symbols-outlined vf-submit-icon">
                     arrow_forward
                   </span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={onReset}
-                  className="px-8 h-12 bg-white border border-gray-200 text-gray-600 rounded-md font-medium text-sm hover:bg-gray-50 transition-colors"
-                >
+                <button type="button" onClick={onReset} className="vf-reset">
                   RESET ALL FIELDS
                 </button>
               </div>
@@ -2472,9 +2392,6 @@ else navigate("/valucheck");
         </div>
       </main>
 
-
-
-      {/* ✅ REPLACED Footer */}
       <Footer />
     </div>
   );
@@ -2482,18 +2399,13 @@ else navigate("/valucheck");
 
 // ---------- Small UI helpers ----------
 function Label({ children }) {
-  return <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">{children}</label>;
+  return <label className="vf-label">{children}</label>;
 }
 
 function ToggleBtnClean({ label, active, onClick }) {
-  const base = "py-2.5 px-4 text-xs font-semibold rounded-md border transition-all text-center cursor-pointer select-none";
-  const act = "border-black bg-black text-white";
-  const inact = "border-gray-200 bg-white text-gray-600 hover:border-gray-300";
-
   return (
-    <button type="button" onClick={onClick} className={[base, "flex-1 min-w-[120px] sm:min-w-0", active ? act : inact].join(" ")}>
+    <button type="button" onClick={onClick} className={`vf-toggle${active ? " is-active" : ""}`}>
       {label}
     </button>
   );
-
 }

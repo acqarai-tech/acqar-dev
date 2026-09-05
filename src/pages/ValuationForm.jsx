@@ -5,7 +5,7 @@ import { supabase } from "../lib/supabase";
 import PaywallModal from "../components/PaywallModal";
 import { trackEvent } from "../analytics";
 // import { Helmet } from "react-helmet-async";
-import "../styles/truvalu-dark.css";
+// import "../styles/truvalu-dark.css";
 
 const RAW_API = import.meta.env.VITE_AVM_API;
 const API = RAW_API ? RAW_API.replace(/\/+$/, "") : "";

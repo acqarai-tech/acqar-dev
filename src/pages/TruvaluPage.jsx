@@ -1012,8 +1012,8 @@ function Hero() {
   borderRadius: "24px"
 }}>
   <img
-    src="/hero.png"
-    alt="Property"
+  src="/hero.webp"
+  alt="Property"
     style={{
       width: "110%",
       height: "290px",
@@ -1044,8 +1044,8 @@ function Hero() {
   }}
 >
   <img
-    src="/hero.png"
-    alt="Property"
+  src="/hero.webp"
+  alt="Property"
     style={{
       width: "110%",
       height: "290px",

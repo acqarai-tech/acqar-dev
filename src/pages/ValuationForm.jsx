@@ -1633,10 +1633,10 @@ else navigate("/valucheck");
 
   return (
     <div className="bg-[#F8F8F8] text-gray-900 font-sans min-h-screen">
-       <Helmet>
+       {/* <Helmet> */}
         <title>Get Your Free Property Valuation | Acqar Truvalu</title>
         <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      {/* </Helmet> */}
       <style>{styles}</style>
 
       {/* ✅ show NEW Header only when NOT logged in (same behavior as before) */}

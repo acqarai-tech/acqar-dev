@@ -2346,17 +2346,19 @@ export default function TruvaluPage() {
     }
   `}</script>
 {/* </Helmet> */}
-      <style>{styles}</style>
-      <div style={{ background:"#fff", color:"var(--primary)", fontFamily:"'Inter',sans-serif", overflowX:"hidden" }}>
-        <Nav />
-<div className="page-body">
-  <Hero />
-  <HowItWorks />
-  <Testimonials />
-  <InsideEveryReport />
-  <CTASection />
-</div>
-<Footer />
+     <style>{styles}</style>
+      <div className="appBg">
+        <div className="container">
+          <Nav />
+          <div className="page-body">
+            <Hero />
+            <HowItWorks />
+            <Testimonials />
+            <InsideEveryReport />
+            <CTASection />
+          </div>
+          <Footer />
+        </div>
       </div>
     </>
   );

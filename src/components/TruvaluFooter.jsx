@@ -1,4 +1,4 @@
-```jsx
+import { useEffect, useState } from 'react'
 import acqarLogo from '../assets/acqar-logo.webp'
 
 const COLUMNS = [
@@ -28,21 +28,45 @@ const COLUMNS = [
 ]
 
 export default function Footer() {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 640 : false
+  )
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640)
+    }
+
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
   const footerStyle = {
     borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-    padding: '56px 24px',
+    padding: isMobile ? '48px 24px' : '56px 24px',
+    width: '100%',
+    boxSizing: 'border-box',
   }
 
   const containerStyle = {
     maxWidth: '1280px',
     margin: '0 auto',
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-    gap: '40px',
+    gridTemplateColumns: isMobile
+      ? 'repeat(2, minmax(0, 1fr))'
+      : 'repeat(4, minmax(0, 1fr))',
+    gap: isMobile ? '40px' : '40px',
+    width: '100%',
+    boxSizing: 'border-box',
   }
 
   const logoColumnStyle = {
-    gridColumn: 'span 1',
+    gridColumn: isMobile ? 'span 2' : 'span 1',
   }
 
   const logoStyle = {
@@ -52,7 +76,7 @@ export default function Footer() {
   }
 
   const descriptionStyle = {
-    marginTop: '12px',
+    margin: '12px 0 0',
     maxWidth: '240px',
     fontSize: '14px',
     lineHeight: '1.5',
@@ -78,15 +102,6 @@ export default function Footer() {
     gap: '8px',
   }
 
-  const linkStyle = {
-    cursor: 'pointer',
-    fontSize: '14px',
-    lineHeight: '1.5',
-    color: 'rgba(20, 20, 20, 0.7)',
-    textDecoration: 'none',
-    transition: 'color 200ms ease',
-  }
-
   const copyrightContainerStyle = {
     maxWidth: '1280px',
     margin: '40px auto 0',
@@ -100,14 +115,9 @@ export default function Footer() {
 
   return (
     <footer style={footerStyle}>
-      <div
-        className="footer-grid"
-        style={containerStyle}
-      >
-        <div
-          className="footer-logo-column"
-          style={logoColumnStyle}
-        >
+      <div style={containerStyle}>
+        {/* Logo and description */}
+        <div style={logoColumnStyle}>
           <img
             src={acqarLogo}
             alt="ACQAR"
@@ -115,11 +125,12 @@ export default function Footer() {
           />
 
           <p style={descriptionStyle}>
-            The Real Estate AI Agent in your pocket. Independent,
-            data-backed, and always on.
+            The Real Estate AI Agent in your pocket.
+            Independent, data-backed, and always on.
           </p>
         </div>
 
+        {/* Footer columns */}
         {COLUMNS.map((column) => (
           <div key={column.title}>
             <p style={columnTitleStyle}>
@@ -131,7 +142,14 @@ export default function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    style={linkStyle}
+                    style={{
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      lineHeight: '1.5',
+                      color: 'rgba(20, 20, 20, 0.7)',
+                      textDecoration: 'none',
+                      transition: 'color 200ms ease',
+                    }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.color =
                         'var(--accent-dark, #9a6b3f)'
@@ -150,34 +168,10 @@ export default function Footer() {
         ))}
       </div>
 
+      {/* Copyright */}
       <div style={copyrightContainerStyle}>
         © 2026 ACQARLABS L.L.C-FZ. All rights reserved.
       </div>
-
-      <style>
-        {`
-          .footer-grid {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-          }
-
-          @media (max-width: 639px) {
-            .footer-grid {
-              grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-              gap: 40px;
-            }
-
-            .footer-logo-column {
-              grid-column: span 2 !important;
-            }
-          }
-
-          @media (min-width: 640px) {
-            .footer-logo-column {
-              grid-column: span 1 !important;
-            }
-          }
-        `}
-      </style>
     </footer>
   )
 }

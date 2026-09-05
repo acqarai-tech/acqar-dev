@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import UAECostCalculator from "../components/UAECostCalculator";
 import UAEPropertyCostCalculator from "../components/UAEPropertyCostCalculator";
 import PaywallModal from "../components/PaywallModal";
+import "../styles/truvalu-dark.css";
 
 import {
   ResponsiveContainer,

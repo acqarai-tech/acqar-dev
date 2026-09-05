@@ -2220,7 +2220,7 @@ function CTASection() {
 /* ──────────────────────────────────────
    APP ROOT
 ────────────────────────────────────── */
-export default function App() {
+export default function TruvaluPage() {
   const location = useLocation();
 
   // 1. Page view
@@ -2258,7 +2258,7 @@ export default function App() {
   }, [location.pathname]);
   return (
     <>
-           <Helmet>
+           {/* <Helmet> */}
  <title>AI Property Valuation Reports for Dubai | Acqar Truvalu</title>
   <meta name="description" content="Get instant AI property valuations for Dubai real estate. Truvalu by Acqar delivers RICS-aligned AVM reports in 60 seconds. Free for your first 3 reports." />
   <link rel="canonical" href="https://www.acqar.com/truvalu" />

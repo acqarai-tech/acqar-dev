@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Nav";
 import { supabase } from "../lib/supabase";
 import PaywallModal from "../components/PaywallModal";
 import { trackEvent } from "../analytics";

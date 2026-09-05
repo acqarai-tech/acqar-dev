@@ -1,10 +1,10 @@
 import acqarLogo from '../assets/acqar-logo.webp'
 
 const COLUMNS = [
-  {
+ {
     title: 'Product',
     links: [
-      { label: 'ACQAR TruValu™', href: 'https://www.acqar.com/truvalu' },
+      { label: 'ACQAR TruValu™', href: '/truvalu' },
       { label: 'Pricing', href: '#for-brokers' },
     ],
   },
